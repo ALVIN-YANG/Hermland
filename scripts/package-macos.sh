@@ -51,7 +51,7 @@ for name in hermland.py ssh_policy.py setup-vps.sh ssh-device.sh ssh-relay.sh co
     cp "deploy/$name" "$setup/deploy/"
 done
 for name in 快速开始 安全门禁 远程中转; do cp "docs/$name.md" "$setup/docs/"; done
-cp README.md LICENSE "$setup/"
+cp README.md README.en.md LICENSE "$setup/"
 mkdir -p "$setup/assets/readme"
 cp assets/readme/panorama.png "$setup/assets/readme/"
 ditto -c -k --keepParent "$app" "$archive"

@@ -1,5 +1,7 @@
 # Hermland
 
+[简体中文](README.md) · [English](README.en.md)
+
 **在另一台 Mac 上，继续使用你自己的 Hermes 或 OpenClaw。** 模型、记忆和会话仍在原来的常驻 Mac 上，不用迁移，也不用把 WebUI 暴露到公网。
 
 A macOS SSH client for your existing Hermes or OpenClaw. Keep your agent where it is.

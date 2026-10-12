@@ -53,6 +53,8 @@ targets:
         buildPhase: resources
       - path: ../README.md
         buildPhase: resources
+      - path: ../README.en.md
+        buildPhase: resources
       - path: ../assets/readme/panorama.png
         buildPhase: resources
       - path: ../LICENSE

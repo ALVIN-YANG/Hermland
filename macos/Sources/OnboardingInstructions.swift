@@ -50,7 +50,7 @@ enum SetupResources {
             }
             try files.copyItem(at: source, to: docs.appendingPathComponent(name + ".md"))
         }
-        for name in ["README.md", "LICENSE"] {
+        for name in ["README.md", "README.en.md", "LICENSE"] {
             guard let source = bundle.resourceURL?.appendingPathComponent(name), files.fileExists(atPath: source.path) else {
                 throw SSHConnectionError.process("工具包说明或许可证缺失，请重新构建 App。")
             }
