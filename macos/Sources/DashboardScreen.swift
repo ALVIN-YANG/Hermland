@@ -19,7 +19,10 @@ struct DashboardScreen: View {
             }
             .toolbar {
                 ToolbarItemGroup(placement: .automatic) {
-                    Button("连接检查") { showingChecks = true }
+                    Button("连接检查") {
+                        showingChecks = true
+                        Task { await store.refreshStatus() }
+                    }
                     if let status = store.status {
                         HStack(spacing: 6) {
                             StatusDot(ok: true)

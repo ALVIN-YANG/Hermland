@@ -186,15 +186,17 @@ final class AppState: ObservableObject {
 
     func refreshStatus() async {
         guard isConnected else { return }
+        diagnostics.update(.agent, .running)
         do {
             if sshConfiguration.backend == .openclaw {
                 status = try await OpenClawProbe.probe(sshConfiguration)
             } else if let client {
                 status = try await client.probe()
             }
+            diagnostics.update(.agent, .passed, detail: "健康接口通过；网页登录和模型回答需要你另行确认。")
             banner = nil
         } catch {
-            banner = error.localizedDescription
+            banner = diagnostics.fail(error)
         }
     }
 

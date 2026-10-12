@@ -11,11 +11,18 @@ actor HermesClient {
 
     init(settings: ConnectionSettings) {
         self.settings = settings
-        let configuration = URLSessionConfiguration.default
+        self.session = URLSession(configuration: Self.sessionConfiguration())
+    }
+
+    static func sessionConfiguration() -> URLSessionConfiguration {
+        // A reused loopback address must not reuse another client's cookies or proxy route.
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.connectionProxyDictionary = [:]
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.httpCookieAcceptPolicy = .always
         configuration.httpShouldSetCookies = true
         configuration.timeoutIntervalForRequest = 30
-        self.session = URLSession(configuration: configuration)
+        return configuration
     }
 
     func updateSettings(_ settings: ConnectionSettings) {

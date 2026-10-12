@@ -46,6 +46,8 @@ open .build/Build/Products/Debug/Hermland.app
 
 Python 合约检查：`bash scripts/check.sh`。真实 SSH 验收在隔离容器中运行，覆盖错误密钥、禁 Shell、受限转发、条件规则冲突与撤销；禁止在真实 VPS 上直接运行容器测试脚本。具体命令见 [参与开发](CONTRIBUTING.md)。
 
+[GitHub CI](https://github.com/ALVIN-YANG/Hermland/actions/workflows/ci.yml) 检查源码秘密、Python 合约、Ubuntu/Debian 真 SSH、macOS 测试与通用开发包。CI artifact 明确标注未公证，不等同于正式 Release。
+
 OpenClaw 集成脚本验证版本为 2026.9.9，可设置 `OPENCLAW_ENTRY` 在隔离容器内验证真实 Gateway、双 SSH、登录拒绝与只读健康 RPC；不发送模型消息。其他上游版本不能只凭测试文件声称兼容。
 
 ## 打包与发行

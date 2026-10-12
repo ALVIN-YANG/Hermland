@@ -103,7 +103,7 @@ struct ConnectionChecksView: View {
     }
     private func color(_ result: CheckResult) -> Color {
         switch result {
-        case .passed: return HermlandColor.accent
+        case .passed: return Color(nsColor: .systemGreen)
         case .failed: return .red
         case .running: return .orange
         case .waiting: return HermlandColor.secondary

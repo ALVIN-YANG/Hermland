@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Development artifacts are explicitly unsigned for public distribution.
+# Development artifacts are ad-hoc signed, not notarized for public distribution.
 set -euo pipefail
 fail() { printf 'FAIL：%s\n' "$*" >&2; exit 1; }
 task_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)

@@ -2,6 +2,13 @@ import XCTest
 @testable import Hermland
 
 final class OnboardingTests: XCTestCase {
+    func testHermesHTTPTransportDoesNotReuseGlobalCookiesOrProxy() {
+        let profile = HermesClient.sessionConfiguration()
+        XCTAssertFalse(profile.httpCookieStorage === HTTPCookieStorage.shared)
+        XCTAssertEqual(profile.connectionProxyDictionary?.count, 0)
+        XCTAssertEqual(profile.requestCachePolicy, .reloadIgnoringLocalCacheData)
+        XCTAssertTrue(profile.httpShouldSetCookies) // Legacy login still works within this client instance.
+    }
     func testFingerprintMatchesOpenSSHAndRejectsInvalidKey() {
         let key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKnAc33IigsphK1ZXasje0U/gOKbBuiSO75mI0xGkVlZ"
         XCTAssertEqual(SSHConfiguration.fingerprint(key), "SHA256:j17NwLkJjVp/8M251+iXDdkExN9Rg4KaWZK93Rl7lQk")
