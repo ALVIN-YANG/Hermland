@@ -9,7 +9,7 @@ settings:
     PRODUCT_NAME: Hermland
     PRODUCT_BUNDLE_IDENTIFIER: land.hermland.client
     MARKETING_VERSION: 0.1.0
-    CURRENT_PROJECT_VERSION: 2
+    CURRENT_PROJECT_VERSION: 3
     MACOSX_DEPLOYMENT_TARGET: 14.0
     SWIFT_VERSION: 5.0
     GENERATE_INFOPLIST_FILE: YES
@@ -51,13 +51,23 @@ targets:
         buildPhase: resources
       - path: ../docs/远程中转.md
         buildPhase: resources
+      - path: ../docs/发布与验收.md
+        buildPhase: resources
       - path: ../README.md
         buildPhase: resources
       - path: ../README.en.md
         buildPhase: resources
       - path: ../assets/readme/panorama.png
         buildPhase: resources
+      - path: ../assets/readme/how-it-works.svg
+        buildPhase: resources
+      - path: ../assets/readme/how-it-works.en.svg
+        buildPhase: resources
       - path: ../LICENSE
+        buildPhase: resources
+      - path: ../SECURITY.md
+        buildPhase: resources
+      - path: ../CONTRIBUTING.md
         buildPhase: resources
   HermlandTests:
     type: bundle.unit-test

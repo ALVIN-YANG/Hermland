@@ -60,7 +60,7 @@ jobs:
       - name: Install build prerequisite
         run: brew install xcodegen
       - run: bash scripts/check.sh --macos
-      - name: Build development preview (not signed for public distribution)
+      - name: Build ad-hoc preview (not notarized)
         run: bash scripts/package-macos.sh --development releases
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

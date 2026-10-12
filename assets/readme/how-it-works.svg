@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">Hermland：两端主动连接自己的 VPS</title>
+  <desc id="desc">外出 Mac 的 Hermland 和家里常驻 Mac 的 Agent 各自主动建立一条 SSH 连接到 VPS。箭头表示连接发起方向，消息双向传输。设备须人工授权，服务器公钥固定校验；Agent 与会话仍在家里。VPS 管理员必须可信，这不是端到端加密。</desc>
+  <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#2e6b61" stroke-width="2"/></marker></defs>
+  <rect width="1200" height="560" rx="22" fill="#f5f7f4"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" fill="#172b39">
+    <text x="56" y="68" font-size="36" font-weight="700">Agent 留在家里，连接带到身边。</text>
+    <text x="56" y="110" font-size="23" fill="#50636d">两条 SSH 通道 · 同一个原生 WebUI · 不开放家庭路由器端口</text>
+    <g id="client">
+      <rect x="56" y="166" width="300" height="210" rx="16" fill="#fff" stroke="#ccd7d3" stroke-width="2"/>
+      <text x="82" y="208" font-size="27" font-weight="700">外出 Mac</text>
+      <text x="82" y="247" font-size="24">Hermland</text>
+      <text x="82" y="295" font-size="21" fill="#50636d">设备私钥：本机钥匙串</text>
+      <text x="82" y="334" font-size="21" fill="#50636d">网页端口：仅本机可见</text>
+    </g>
+    <g id="relay">
+      <rect x="450" y="166" width="300" height="210" rx="16" fill="#e4eeea" stroke="#a9c0b8" stroke-width="2"/>
+      <text x="476" y="208" font-size="27" font-weight="700">你的 VPS</text>
+      <text x="476" y="247" font-size="24">SSH 中转</text>
+      <text x="476" y="295" font-size="21" fill="#50636d">人工登记设备公钥</text>
+      <text x="476" y="334" font-size="21" fill="#50636d">中转端口：仅 VPS 本机</text>
+    </g>
+    <g id="home">
+      <rect x="844" y="166" width="300" height="210" rx="16" fill="#fff" stroke="#ccd7d3" stroke-width="2"/>
+      <text x="870" y="208" font-size="27" font-weight="700">家里常驻 Mac</text>
+      <text x="870" y="247" font-size="24">Hermes / OpenClaw</text>
+      <text x="870" y="295" font-size="21" fill="#50636d">原模型、记忆和会话</text>
+      <text x="870" y="334" font-size="21" fill="#50636d">保持在线、登录、不睡眠</text>
+    </g>
+    <path d="M370 255 H432" stroke="#2e6b61" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M830 255 H768" stroke="#2e6b61" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="402" y="228" font-size="20" text-anchor="middle" fill="#2e6b61">SSH</text>
+    <text x="798" y="228" font-size="20" text-anchor="middle" fill="#2e6b61">SSH</text>
+    <text x="56" y="424" font-size="23">箭头是连接发起方向。消息双向传输；SSH 负责运输，不生成网页。</text>
+    <path d="M56 453 H1144" stroke="#ccd7d3"/>
+    <text x="56" y="491" font-size="22" font-weight="600">信任边界：必须信任 VPS 管理员，这不是客户端到家里的端到端加密。</text>
+    <text x="56" y="528" font-size="21" fill="#50636d">知道地址或公钥不等于获准连接；本机其他程序可访问已打开的回环端口。</text>
+  </g>
+</svg>

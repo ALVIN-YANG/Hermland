@@ -2,8 +2,11 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct OnboardingActions: View {
-    let backend: AgentBackend
+    @ObservedObject var store: AppState
+    let purpose: SetupPurpose
     @State private var promptCopied = false
+    @State private var preparing = false
+    @State private var requestID = UUID()
     @State private var exporting = false
     @State private var guide: String?
     @State private var notice: String?
@@ -11,22 +14,20 @@ struct OnboardingActions: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Button(promptCopied ? "初始化指令已复制" : "复制初始化指令") {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(OnboardingInstructions.prompt(for: backend), forType: .string)
-                    promptCopied = true
-                }
+                Button(preparing ? "准备公钥…" : (promptCopied ? "配置材料已复制" : "复制配置材料")) { copyRequest() }
+                    .buttonStyle(.borderedProminent).tint(HermlandColor.accent).disabled(preparing)
                 Button(exporting ? "正在导出…" : "导出配置工具") { export() }.disabled(exporting)
                 Button("手动步骤") {
                     do { guide = try SetupResources.guide() }
                     catch { notice = "指引资源缺失，请使用仓库 docs/快速开始.md。" }
                 }
             }
-            Text("把指令发给你平时使用的 \(backend.title)，不要发到尚未连通的 Hermland。没有执行权限时按手动步骤完成。")
+            Text("包含这台电脑的公钥、指纹和指令，不含私钥。手动发给你平时使用的 \(store.sshConfiguration.backend.title) 或可信管理员，不要发到尚未连通的 Hermland。")
                 .font(.caption).foregroundStyle(HermlandColor.secondary)
             if let notice { Text(notice).font(.caption).textSelection(.enabled) }
         }
-        .onChange(of: backend) { _, _ in promptCopied = false }
+        .onChange(of: store.sshConfiguration.backend) { _, _ in invalidateCopy() }
+        .onChange(of: purpose) { _, _ in invalidateCopy() }
         .sheet(isPresented: Binding(get: { guide != nil }, set: { if !$0 { guide = nil } })) {
             VStack(alignment: .leading) {
                 HStack {
@@ -40,6 +41,38 @@ struct OnboardingActions: View {
                 }
             }.padding(24).frame(width: 740, height: 620)
         }
+    }
+
+    private func copyRequest() {
+        preparing = true
+        promptCopied = false
+        let operationID = UUID()
+        requestID = operationID
+        let backend = store.sshConfiguration.backend
+        let selectedPurpose = purpose
+        Task {
+            defer { preparing = false }
+            await store.prepareDeviceIdentity()
+            do {
+                let request = try OnboardingInstructions.request(for: backend, purpose: selectedPurpose,
+                                                               publicKey: store.devicePublicKey)
+                // A changed selection must not show a success label for stale material.
+                guard operationID == requestID, backend == store.sshConfiguration.backend else { return }
+                NSPasteboard.general.clearContents()
+                guard NSPasteboard.general.setString(request, forType: .string) else {
+                    throw SSHConnectionError.process("复制失败，请重试。")
+                }
+                promptCopied = true
+                notice = nil
+            } catch {
+                notice = error.localizedDescription
+            }
+        }
+    }
+
+    private func invalidateCopy() {
+        requestID = UUID()
+        promptCopied = false
     }
 
     private func export() {

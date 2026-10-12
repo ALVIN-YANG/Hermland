@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Development artifacts are ad-hoc signed, not notarized for public distribution.
+# Development artifacts can be public previews, but are ad-hoc signed and not notarized.
 set -euo pipefail
 fail() { printf 'FAIL：%s\n' "$*" >&2; exit 1; }
 task_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
@@ -50,10 +50,11 @@ mkdir -p "$setup/deploy" "$setup/docs"
 for name in hermland.py ssh_policy.py setup-vps.sh ssh-device.sh ssh-relay.sh connection.example.json connection.openclaw.example.json; do
     cp "deploy/$name" "$setup/deploy/"
 done
-for name in 快速开始 安全门禁 远程中转; do cp "docs/$name.md" "$setup/docs/"; done
-cp README.md README.en.md LICENSE "$setup/"
+for name in 快速开始 安全门禁 远程中转 发布与验收; do cp "docs/$name.md" "$setup/docs/"; done
+cp README.md README.en.md LICENSE SECURITY.md CONTRIBUTING.md "$setup/"
 mkdir -p "$setup/assets/readme"
 cp assets/readme/panorama.png "$setup/assets/readme/"
+cp assets/readme/how-it-works.svg assets/readme/how-it-works.en.svg "$setup/assets/readme/"
 ditto -c -k --keepParent "$app" "$archive"
 ditto -c -k --keepParent "$setup" "$setup_archive"
 (cd "$task_output" && shasum -a 256 "$(basename "$archive")" "$(basename "$setup_archive")" > "SHA256SUMS$version$suffix.txt")
@@ -64,5 +65,5 @@ python3 -c 'import json,sys; print(json.dumps({"version":sys.argv[1],"sourceComm
     "$version" "$task_revision" "$task_dirty" "$mode" > "$task_output/BUILD-$version$suffix.json"
 printf 'PASS：%s\nPASS：%s\n' "$archive" "$setup_archive"
 if [[ "$mode" == --development ]]; then
-    printf '注意：开发测试包，临时签名、未公证。不能声称可直接分发给普通用户；不要关闭 Gatekeeper。\n'
+    printf '注意：临时签名、未公证。可作为明确标注的预览分发，不是公证正式版；不要关闭 Gatekeeper。\n'
 fi

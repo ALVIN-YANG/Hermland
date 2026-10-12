@@ -27,6 +27,42 @@ final class OnboardingTests: XCTestCase {
         XCTAssertFalse(OnboardingInstructions.prompt(for: .hermes).contains("--backend openclaw"))
     }
 
+    func testCompleteRequestContainsPublicKeyAndNeedsSeparateApproval() throws {
+        let key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKnAc33IigsphK1ZXasje0U/gOKbBuiSO75mI0xGkVlZ"
+        for backend in AgentBackend.allCases {
+            let request = try OnboardingInstructions.request(for: backend, purpose: .firstSetup, publicKey: key)
+            XCTAssertTrue(request.contains(key))
+            XCTAssertTrue(request.contains(SSHConfiguration.fingerprint(key)!))
+            XCTAssertTrue(request.contains("这份材料不是授权"))
+            XCTAssertTrue(request.contains("另行明确确认"))
+            XCTAssertFalse(request.contains("PRIVATE KEY"))
+        }
+        let additional = try OnboardingInstructions.request(for: .openclaw, purpose: .additionalDevice, publicKey: key)
+        XCTAssertTrue(additional.contains("不要安装、升级或重建"))
+        XCTAssertTrue(additional.contains("已有中转不通时停下报告"))
+        XCTAssertThrowsError(try OnboardingInstructions.request(for: .hermes, purpose: .firstSetup, publicKey: ""))
+        XCTAssertThrowsError(try OnboardingInstructions.request(for: .hermes, purpose: .firstSetup, publicKey: key + "\nextra"))
+    }
+
+    @MainActor
+    func testReadingConfigurationDoesNotReplaceSavedRouteOrConnect() throws {
+        let store = AppState()
+        let original = store.sshConfiguration
+        let key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKnAc33IigsphK1ZXasje0U/gOKbBuiSO75mI0xGkVlZ"
+        let candidate = SSHConfiguration(host: "example.invalid", user: "hl-test", serverPublicKey: key)
+        let folder = try SSHIdentity.privateTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let file = folder.appendingPathComponent("connection.json")
+        try JSONEncoder().encode(candidate).write(to: file)
+        XCTAssertEqual(try store.readSSHConfiguration(from: file), candidate)
+        XCTAssertEqual(store.sshConfiguration, original)
+        XCTAssertFalse(store.isConnecting)
+        XCTAssertFalse(store.isConnected)
+        try Data("{}".utf8).write(to: file)
+        XCTAssertThrowsError(try store.readSSHConfiguration(from: file))
+        XCTAssertEqual(store.sshConfiguration, original)
+    }
+
     func testFailureDoesNotMarkLaterChecksPassedOrLeakHTTPBody() {
         var checks = ConnectionDiagnostics()
         checks.update(.configuration, .passed)
@@ -62,7 +98,9 @@ final class OnboardingTests: XCTestCase {
         process.waitUntilExit()
         XCTAssertEqual(process.terminationStatus, 0)
         let root = extracted.appendingPathComponent("HermlandSetup")
-        for name in ["deploy/ssh_policy.py", "docs/快速开始.md", "README.en.md", "LICENSE", "assets/readme/panorama.png"] {
+        for name in ["deploy/ssh_policy.py", "docs/快速开始.md", "README.en.md", "LICENSE", "assets/readme/panorama.png",
+                     "assets/readme/how-it-works.svg", "assets/readme/how-it-works.en.svg", "SECURITY.md",
+                     "docs/发布与验收.md", "CONTRIBUTING.md"] {
             XCTAssertTrue(FileManager.default.fileExists(atPath: root.appendingPathComponent(name).path), name)
         }
         let entries = try FileManager.default.contentsOfDirectory(atPath: root.appendingPathComponent("deploy").path)

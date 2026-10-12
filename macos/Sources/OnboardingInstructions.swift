@@ -1,5 +1,11 @@
 import Foundation
 
+enum SetupPurpose: String, CaseIterable, Identifiable {
+    case firstSetup, additionalDevice
+    var id: String { rawValue }
+    var title: String { self == .firstSetup ? "第一次配置" : "新增一台电脑" }
+}
+
 enum OnboardingInstructions {
     static let repository = URL(string: "https://github.com/ALVIN-YANG/Hermland")!
 
@@ -13,6 +19,27 @@ enum OnboardingInstructions {
         先确认 Agent 的实际运行主机为常驻 macOS、VPS 为 Debian/Ubuntu，且已有我核对过的管理员 SSH；不满足就停下说明限制。复用我的 Agent、模型、凭据、记忆与会话，不重装、不升级、不迁移、不读取或输出凭据。按 deploy 脚本逐步执行，每一步报告 PASS/FAIL；失败停在当前步骤，不跳过检查。
         常驻机和客户端公钥由我手动提供并核对指纹。每次授权前必须获得我对这台机器的明确确认，不能主动申请或自动审批。没有 VPS 执行权限就给我管理命令，不复制管理私钥、不获取永久管理权限。服务器公钥只从已有可信管理连接或控制台获取，不盲信 ssh-keyscan。
         不公开 WebUI，不扩大监听，不关闭 SSH 主机身份校验、Gateway 认证或安全审批。发现不兼容的 SSH Match 规则时停下，不删除或重排其他用户的策略。最后导出已授权设备的连接 JSON，让我导入 App。链路健康、网页登录、真实模型回答分别验收；模型测试由我本人发送。不要仅凭健康检查声称全部完成。
+        """
+    }
+
+    /// Only public material crosses the clipboard. Copying this is not authorization.
+    static func request(for backend: AgentBackend, purpose: SetupPurpose, publicKey: String) throws -> String {
+        let key = try SSHConfiguration.normalizedPublicKey(publicKey)
+        guard let fingerprint = SSHConfiguration.fingerprint(key) else {
+            throw SSHConnectionError.process("设备公钥不可用，未复制配置材料。")
+        }
+        let scope = purpose == .firstSetup
+            ? "任务：首次配置。先检查并复用已有服务和隧道，只补缺失的组件；常驻机公钥另由我手动提供并确认。"
+            : "任务：新增一台电脑。只检查已有中转、人工授权下面的客户端公钥并导出配置；不要安装、升级或重建后端、VPS 工具或常驻机隧道。已有中转不通时停下报告，不自动修复。"
+        return """
+        \(scope)
+        客户端类型：\(backend.title)
+        本次手动发送的客户端公钥：
+        \(key)
+        公钥指纹：\(fingerprint)
+        这份材料不是授权。我会在你报告指纹与要授权的机器后，另行明确确认。
+
+        \(prompt(for: backend))
         """
     }
 }
@@ -44,13 +71,13 @@ enum SetupResources {
                      "connection.example.json", "connection.openclaw.example.json"] {
             try files.copyItem(at: resources.appendingPathComponent(name), to: deploy.appendingPathComponent(name))
         }
-        for name in ["快速开始", "安全门禁", "远程中转"] {
+        for name in ["快速开始", "安全门禁", "远程中转", "发布与验收"] {
             guard let source = bundle.url(forResource: name, withExtension: "md") else {
                 throw SSHConnectionError.process("配置说明资源缺失，请重新构建 App。")
             }
             try files.copyItem(at: source, to: docs.appendingPathComponent(name + ".md"))
         }
-        for name in ["README.md", "README.en.md", "LICENSE"] {
+        for name in ["README.md", "README.en.md", "LICENSE", "SECURITY.md", "CONTRIBUTING.md"] {
             guard let source = bundle.resourceURL?.appendingPathComponent(name), files.fileExists(atPath: source.path) else {
                 throw SSHConnectionError.process("工具包说明或许可证缺失，请重新构建 App。")
             }
@@ -58,8 +85,9 @@ enum SetupResources {
         }
         let artwork = root.appendingPathComponent("assets/readme", isDirectory: true)
         try files.createDirectory(at: artwork, withIntermediateDirectories: true)
-        try files.copyItem(at: resources.appendingPathComponent("panorama.png"),
-                           to: artwork.appendingPathComponent("panorama.png"))
+        for name in ["panorama.png", "how-it-works.svg", "how-it-works.en.svg"] {
+            try files.copyItem(at: resources.appendingPathComponent(name), to: artwork.appendingPathComponent(name))
+        }
         // ditto writes only our temporary archive; copyItem refuses a racing overwrite.
         let archive = temporary.appendingPathComponent("HermlandSetup.zip")
         let command = Process()

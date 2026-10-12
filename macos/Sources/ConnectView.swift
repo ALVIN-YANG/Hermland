@@ -6,6 +6,8 @@ struct ConnectView: View {
     @State private var importing = false
     @State private var copied = false
     @State private var manual = false
+    @State private var purpose: SetupPurpose = .firstSetup
+    @State private var pendingConfiguration: SSHConfiguration?
 
     var body: some View {
         ScrollView {
@@ -18,35 +20,42 @@ struct ConnectView: View {
                     Text("常驻 Mac · Debian / Ubuntu VPS · macOS 14+ 客户端")
                         .font(.caption).foregroundStyle(HermlandColor.secondary)
                 }
-                step(1, "让已有 Agent 协助配置") {
+                Picker("这次要做什么", selection: $purpose) {
+                    ForEach(SetupPurpose.allCases) { Text($0.title).tag($0) }
+                }.pickerStyle(.segmented)
+                step(1, "复制材料，发给已有 Agent") {
                     Picker("已有的 Agent", selection: $store.sshConfiguration.backend) {
                         ForEach(AgentBackend.allCases) { Text($0.title).tag($0) }
                     }.pickerStyle(.segmented)
                         .onChange(of: store.sshConfiguration.backend) { _, backend in
                             if backend == .hermes { store.sshConfiguration.controlUIPath = "/" }
                         }
-                    OnboardingActions(backend: store.sshConfiguration.backend)
+                    OnboardingActions(store: store, purpose: purpose)
+                    Text(purpose == .firstSetup
+                         ? "已有服务和隧道就复用，只补缺失组件。没有执行权限时，按手动步骤完成。"
+                         : "只为这台电脑增加授权。不重装 Agent，不重建常驻机隧道。")
+                        .font(.caption).foregroundStyle(HermlandColor.secondary)
                 }
-                step(2, "手动发送这台电脑的公钥") {
-                    HStack {
+                step(2, "核对指纹，明确确认授权") {
+                    Text("Agent 或管理员报告要授权的电脑和指纹后，由你明确确认。复制材料不等于批准连接。")
+                        .font(.callout)
+                    if let fingerprint = SSHConfiguration.fingerprint(store.devicePublicKey) {
+                        Text(fingerprint).font(.system(.caption, design: .monospaced)).textSelection(.enabled)
+                    }
+                    DisclosureGroup("只需公钥？单独复制") {
                         Button(copied ? "公钥已复制" : "复制设备公钥") {
                             Task {
                                 await store.copyDevicePublicKey()
                                 copied = !store.devicePublicKey.isEmpty
                             }
                         }
-                        Text("发给可信管理员，由你确认后授权。")
-                            .font(.caption).foregroundStyle(HermlandColor.secondary)
-                    }
-                    if let fingerprint = SSHConfiguration.fingerprint(store.devicePublicKey) {
-                        Text(fingerprint).font(.system(.caption, design: .monospaced)).textSelection(.enabled)
                     }
                     Text("私钥留在本机钥匙串。没有主动申请或自动审批入口。")
                         .font(.caption).foregroundStyle(HermlandColor.secondary)
                 }
-                step(3, "导入管理员返回的配置") {
+                step(3, "导入配置，检查后开始使用") {
                     HStack {
-                        Button("导入连接配置") { importing = true }
+                        Button("导入并检查…") { importing = true }
                         if (try? store.sshConfiguration.validated()) != nil {
                             Label("格式有效", systemImage: "checkmark.circle")
                                 .font(.caption).foregroundStyle(HermlandColor.accent)
@@ -74,12 +83,10 @@ struct ConnectView: View {
                             }
                         }.padding(.top, 10)
                     }
-                }
-                step(4, "连接并逐项检查") {
                     Button { Task { await store.connect() } } label: {
                         HStack {
                             if store.isConnecting { ProgressView().controlSize(.small) }
-                            Text(store.isConnecting ? "正在检查…" : "连接并检查")
+                            Text(store.isConnecting ? "正在检查…" : "检查已有配置")
                         }.frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent).tint(HermlandColor.accent)
@@ -97,8 +104,35 @@ struct ConnectView: View {
         .background(HermlandColor.canvas)
         .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
             switch result {
-            case .success(let url): store.importSSHConfiguration(from: url)
+            case .success(let url):
+                do {
+                    pendingConfiguration = try store.readSSHConfiguration(from: url)
+                    store.banner = nil
+                } catch { store.banner = error.localizedDescription }
             case .failure: store.banner = "配置文件未导入。请重新选择管理员提供的 JSON。"
+            }
+        }
+        .sheet(isPresented: Binding(get: { pendingConfiguration != nil },
+                                    set: { if !$0 { pendingConfiguration = nil } })) {
+            if let configuration = pendingConfiguration {
+                VStack(alignment: .leading, spacing: 18) {
+                    Text("确认管理员返回的配置").font(.title2)
+                    Text("只有你确认文件来自可信管理员后，才会替换配置并连接。请通过原可信渠道核对服务器指纹。")
+                        .foregroundStyle(HermlandColor.secondary)
+                    Text("\(configuration.backend.title) · \(configuration.displayAddress)")
+                        .font(.system(.body, design: .monospaced)).textSelection(.enabled)
+                    Text(SSHConfiguration.fingerprint(configuration.serverPublicKey) ?? "")
+                        .font(.system(.callout, design: .monospaced)).textSelection(.enabled)
+                    HStack {
+                        Button("取消") { pendingConfiguration = nil }.keyboardShortcut(.cancelAction)
+                        Spacer()
+                        Button("来源可信，连接并检查") {
+                            store.sshConfiguration = configuration
+                            pendingConfiguration = nil
+                            Task { await store.connect() }
+                        }.buttonStyle(.borderedProminent).tint(HermlandColor.accent)
+                    }
+                }.padding(28).frame(width: 620)
             }
         }
     }

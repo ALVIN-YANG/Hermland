@@ -4,17 +4,21 @@
 
 **Use your own Hermes or OpenClaw from another Mac.** Your models, memory, and conversations stay on the original always-on Mac. No migration, and no public WebUI endpoint.
 
+[Download preview](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1) · [Website and setup flow](https://alvin-yang.github.io/Hermland/?lang=en) · [Quick start (Chinese)](docs/快速开始.md)
+
+macOS 14+ · Apple Silicon / Intel · MIT. This preview is ad-hoc signed and **not notarized by Apple**. Read the installation notice below.
+
 <p align="center">
   <a href="assets/readme/panorama.png"><img src="assets/readme/panorama.png" width="100%" alt="Hermland overview: keep your existing agent and conversations, connect through two SSH tunnels via your own VPS, authorize device public keys manually, let your existing agent help with setup, import and check the connection, and revoke one device independently. Getting started: initialize, share a public key, import configuration, then verify the connection."></a>
 </p>
 
-*The illustration has Chinese labels and shows concepts, not a product screenshot. Version 0.1.0 is a development preview. A Developer ID–signed and notarized release is not available yet.*
+*The Chinese illustration shows concepts, not a product screenshot. It separates the operations; the updated app groups setup material, public keys, and checks into the three steps below.*
 
 ## What you can do
 
 - **Keep using your existing agent.** Hermland displays Hermes WebUI or OpenClaw Control UI. It does not create another model configuration, memory store, or chat backend.
 - **Allow only authorized computers.** Each device has its own key pair. Private keys stay in the local macOS Keychain. An administrator approves public keys manually, and the client verifies the pinned server key. There is no shared Gate token or automatic approval.
-- **Ask your existing agent to help with setup.** The app can copy setup instructions and export a configuration toolkit. Each step has a pass criterion; you can also follow the manual guide.
+- **Ask your existing agent to help with setup.** Copy the public key, fingerprint, and instructions together. Export a toolkit if needed. Each step has a pass criterion; a manual guide is also included.
 - **See which checks pass or fail.** Check configuration, device keys, SSH, and backend health separately, then copy a redacted report. A healthy endpoint does not prove that you are logged in or that the model can answer.
 - **Revoke one computer.** The administrator lists, authorizes, and revokes public keys from the command line. Revocation closes that device's active connections and blocks reconnection without changing the agent or other devices.
 
@@ -22,24 +26,47 @@ For users who already run Hermes with WebUI, or OpenClaw Gateway with Control UI
 
 ## Get started
 
-1. **Initialize.** Choose Hermes or OpenClaw in the app, then send the initialization instructions to the agent you already use. If it cannot execute commands, follow the manual steps.
-2. **Share a public key.** Copy the device public key and send it to your administrator through a trusted channel. Confirm the computer before it is authorized. Never send the private key.
-3. **Import configuration.** Import the connection JSON returned by the administrator and verify its source. It includes the server identity, not passwords, private keys, or model API keys.
-4. **Verify the connection.** Review the four checks, complete the original web login, then send a message yourself to test a real model response. The app reconnects automatically on later launches.
+1. **Send the material.** Select your existing backend and click “复制配置材料” (copy setup material). Send it manually to your usual agent or trusted administrator. It includes this Mac's public key and fingerprint, never its private key.
+2. **Confirm authorization.** Check the reported computer and fingerprint, then explicitly approve it. Copying is not approval. You can be the administrator; use the manual guide if the agent lacks permission to execute commands.
+3. **Import and use.** Click “导入并检查…” (import and check). Review the returned JSON and server fingerprint, then confirm its trusted source to start connection checks. Complete the original web login and send a message yourself to test the model.
+
+First setup prepares or reuses the relay. Choose “新增一台电脑” (add a computer) for later devices: only add a key, without reinstalling services or creating another home tunnel. For daily use, open the app; it reconnects using the saved configuration.
 
 See the **[quick start guide (Chinese)](docs/快速开始.md)** for setup instructions, administrator commands, and pass criteria. Reuse working services and tunnels. Do not reinstall the agent, change models, or copy conversations. The app UI and detailed guides currently use Chinese.
 
 ## How access is controlled
 
-The client and the always-on Mac each connect to your VPS over SSH. The relay port listens only on the VPS loopback interface; no domain name is required. Client device accounts can forward traffic only to the assigned port and cannot execute shell commands. Manage access from your home Mini or another computer with administrator SSH access. There is no management GUI yet.
+![The client and home Mac each initiate SSH connections to your VPS. Traffic is bidirectional and the agent stays at home. Trust the VPS administrator.](assets/readme/how-it-works.en.svg)
+
+SSH carries traffic; it does not create the web page. Both Macs initiate connections to your VPS. The original Hermes/OpenClaw at home still serves the page shown in the app. No inbound port on the home router or domain name is required. Arrows show connection initiation; messages flow both ways.
+
+A public key is an identifier you can share; its matching private key stays on your Mac. Once an administrator registers the public key, SSH verifies possession of that private key. Knowing an IP, public key, or connection JSON does not grant access. The app also pins the server public key supplied by the administrator. Device accounts can forward only to the assigned port and cannot execute shell commands.
 
 Two SSH tunnels **do not provide end-to-end encryption between the client and the always-on Mac**: you must trust the VPS administrator. Other programs on the client computer can also access its open loopback port. OpenClaw's original login and device authentication remain in place. The tools stop on unsupported wildcard rules, address conditions, or potentially overlapping SSH policies; they do not rewrite other services to make setup succeed.
 
 [Relay architecture (Chinese)](docs/远程中转.md) · [Authorize and revoke devices (Chinese)](docs/安全门禁.md) · [Security boundaries and private reports (Chinese)](SECURITY.md)
 
-## Build the app
+## Before daily use
 
-There is no official release ready for general installation yet. Developers can build from source with full Xcode, XcodeGen, and Python 3.9+. Do not disable Gatekeeper or Keychain protection to run a development build.
+- **Keep the home Mac online, logged in, and awake.** User-login services cannot run while it is asleep or logged out; Hermland cannot wake an offline Mac.
+- **Green checks are not a full acceptance test.** They send no model requests. Verify web login and a real response yourself. Hermland needs no Screen Recording or Accessibility permission; an agent's desktop tools may need them separately.
+- **Revoke only the lost computer.** Use trusted administrator SSH from the Mini or another management Mac. Revocation closes that device's connections, not conversations or other devices. Management is currently command-line only.
+
+## Why not just use Tailscale / a VPN?
+
+Hermland is a dedicated entrance to **one agent WebUI, not a general-purpose private network**. This path reuses your VPS and macOS SSH, without another VPN client or hosted mesh account. Each computer gets access to one relay port, with manually sent keys, explicit approval, and visible checks.
+
+That is not a claim of stronger security. Tailscale also supports [administrator device approval](https://tailscale.com/docs/features/access-control/device-management/device-approval) and [device, protocol, and port restrictions](https://tailscale.com/docs/features/access-control/grants). Its WireGuard traffic stays end-to-end encrypted even through [DERP relays](https://tailscale.com/docs/reference/derp-servers), which cannot decrypt it. Our SSH hops meet at the VPS, so its administrator must be trusted.
+
+The tradeoff: you maintain a VPS, SSH, and the home Mac. **First setup is not guaranteed to be easier than Tailscale.** If you already use Tailscale, need NAS/desktop access to several services, or require relays that cannot decrypt traffic, keep it with appropriate approval and access rules. This version does not inspect or change your VPN and has no Tailscale connection mode.
+
+## Get the app
+
+No App Store is needed: download [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1), unzip `Hermland-0.1.0-dev.zip`, and move the app to Applications. The toolkit is bundled and also available as a separate ZIP. The release includes SHA256 checksums and build provenance.
+
+This preview is not Developer ID–signed or notarized. macOS may block first launch. Verify the repository, version, and checksum before deciding yourself whether to allow this individual app in Privacy & Security, following [Apple's guidance](https://support.apple.com/en-us/102445). Never disable Gatekeeper globally or run protection-removal scripts. Wait for a notarized release if you prefer not to make this manual trust decision. A website cannot bypass system checks.
+
+An update may prompt for Keychain access. Verify Hermland and handle the prompt yourself; do not delete the existing device key. To build from source, use full Xcode, XcodeGen, and Python 3.9+:
 
 ```bash
 git clone https://github.com/ALVIN-YANG/Hermland.git

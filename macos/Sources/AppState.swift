@@ -90,13 +90,11 @@ final class AppState: ObservableObject {
         NSPasteboard.general.setString(devicePublicKey, forType: .string)
     }
 
-    func importSSHConfiguration(from url: URL) {
+    /// Read and validate without replacing the trusted route or starting a connection.
+    func readSSHConfiguration(from url: URL) throws -> SSHConfiguration {
         let scoped = url.startAccessingSecurityScopedResource()
         defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-        do {
-            sshConfiguration = try JSONDecoder().decode(SSHConfiguration.self, from: Data(contentsOf: url)).validated()
-            banner = nil
-        } catch { banner = error.localizedDescription }
+        return try JSONDecoder().decode(SSHConfiguration.self, from: Data(contentsOf: url)).validated()
     }
 
     func connect() async {

@@ -56,7 +56,7 @@ struct DashboardScreen: View {
                     }
                     ConnectionChecksView(diagnostics: store.diagnostics, backend: store.sshConfiguration.backend)
                     Divider()
-                    OnboardingActions(backend: store.sshConfiguration.backend)
+                    OnboardingActions(store: store, purpose: .additionalDevice)
                 }.padding(24).frame(width: 600)
             }
     }
