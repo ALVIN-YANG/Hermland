@@ -62,7 +62,7 @@ final class OnboardingTests: XCTestCase {
         process.waitUntilExit()
         XCTAssertEqual(process.terminationStatus, 0)
         let root = extracted.appendingPathComponent("HermlandSetup")
-        for name in ["deploy/ssh_policy.py", "docs/快速开始.md", "LICENSE"] {
+        for name in ["deploy/ssh_policy.py", "docs/快速开始.md", "LICENSE", "assets/readme/panorama.png"] {
             XCTAssertTrue(FileManager.default.fileExists(atPath: root.appendingPathComponent(name).path), name)
         }
         let entries = try FileManager.default.contentsOfDirectory(atPath: root.appendingPathComponent("deploy").path)

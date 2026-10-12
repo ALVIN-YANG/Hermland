@@ -9,6 +9,19 @@ mkdir -p /run/sshd
 ssh-keygen -A >/dev/null
 /usr/sbin/sshd -o PidFile=/run/hermland-test-sshd.pid
 export PATH="$source_dir/tests/fixtures:/usr/sbin:/usr/bin:/sbin:/bin"
+# A pre-existing, literal-user service must retain its exact policy and tunnel.
+useradd --no-create-home --home-dir /var/empty/other-service --shell /usr/sbin/nologin pm-otherfixture
+usermod --password '*' pm-otherfixture
+install -d -m 755 /etc/ssh/sshd_config.d
+other_config=/etc/ssh/sshd_config.d/other-service.conf
+printf '%s\n' 'Match User pm-otherfixture' \
+    '    AuthorizedKeysFile /etc/ssh/other-service.pub' '    AuthorizedKeysCommand none' \
+    '    PasswordAuthentication no' '    KbdInteractiveAuthentication no' \
+    '    AllowTcpForwarding local' '    PermitOpen 127.0.0.1:8787' \
+    '    ForceCommand /bin/false' 'Match all' > "$other_config"
+cp -p "$other_config" "$test_dir/other-service.conf"
+sshd -t
+sshd -T -C user=pm-otherfixture,host=localhost,addr=203.0.113.9 > "$test_dir/other-policy-before"
 bash "$source_dir/deploy/setup-vps.sh"
 bash "$source_dir/deploy/setup-vps.sh"
 [[ ! -e /etc/hermland/ssh-devices && ! -e /etc/hermland/ssh-relay ]] || fail '安装工具自动授权了密钥'
@@ -29,6 +42,8 @@ printf 'PASS：不同版本默认拒绝覆盖，明确升级保留可恢复备�
 ssh-keygen -q -t ed25519 -N '' -f "$test_dir/relay"
 ssh-keygen -q -t ed25519 -N '' -f "$test_dir/device"
 ssh-keygen -q -t ed25519 -N '' -f "$test_dir/wrong"
+printf 'restrict,port-forwarding,command="/bin/false",permitopen="127.0.0.1:8787" %s\n' "$(cat "$test_dir/wrong.pub")" > /etc/ssh/other-service.pub
+chmod 644 /etc/ssh/other-service.pub
 cp -p /etc/ssh/sshd_config "$test_dir/original.conf"
 printf '\nMatch Address 203.0.113.0/24\n    ForceCommand none\n' >> /etc/ssh/sshd_config
 cp -p /etc/ssh/sshd_config "$test_dir/conflict.conf"
@@ -106,14 +121,24 @@ device_pid=$!
 sleep 1
 kill -0 "$device_pid"
 python3 /opt/hermland/hermland.py check --port 19121
+sshd -T -C user=pm-otherfixture,host=localhost,addr=203.0.113.9 > "$test_dir/other-policy-after"
+cmp -s "$test_dir/other-policy-before" "$test_dir/other-policy-after" || fail '其他服务的实际 SSH 策略被改动'
+cmp -s "$other_config" "$test_dir/other-service.conf" || fail '其他服务 SSH 配置被改动'
+ssh "${opts[@]}" -i "$test_dir/wrong" -N -o ExitOnForwardFailure=yes -L 127.0.0.1:19122:127.0.0.1:8787 pm-otherfixture@127.0.0.1 > "$test_dir/other-service.log" 2>&1 &
+other_pid=$!
+sleep 1
+python3 /opt/hermland/hermland.py check --port 19122
 bash /opt/hermland/ssh-device.sh revoke hl-device0001
 sleep 1
 if kill -0 "$device_pid" 2>/dev/null; then fail '撤销后现有客户端隧道未关闭'; fi
 if ssh "${opts[@]}" -i "$test_dir/device" hl-device0001@127.0.0.1 true > "$test_dir/check.log" 2>&1; then fail '撤销后设备仍能认证'; fi
 grep -q 'Permission denied' "$test_dir/check.log" || fail '撤销检查没有到达认证阶段'
 python3 /opt/hermland/hermland.py check --port 19119
-kill "$relay_pid" "$health_pid"
+kill -0 "$other_pid" || fail '撤销 Hermland 设备中断了其他服务'
+python3 /opt/hermland/hermland.py check --port 19122
+kill "$relay_pid" "$health_pid" "$other_pid"
 printf 'PASS：双通道可达，撤销关闭客户端连接且不影响 Mini 中转\n'
+printf 'PASS：不相交的明确用户规则保持不变，真实 SSH 通道不受授权或撤销影响\n'
 
 if [[ -n ${OPENCLAW_ENTRY:-} ]]; then
     bash /opt/hermland/ssh-device.sh authorize hl-device0001 "$test_dir/device.pub"

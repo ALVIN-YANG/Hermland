@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Conservative SSH compatibility gate; never changes the server configuration.
 
-Only global settings and Hermland's two managed group blocks are supported.
+Support global settings, Hermland's managed groups and disjoint literal users.
 Arbitrary Match/Include combinations cannot be proven safe by checking one
 source IP. Refuse them, rather than weakening or rearranging another policy.
 """
 import argparse
 import glob
+import grp
 from pathlib import Path
+import pwd
+import re
 import shlex
 import sys
 
@@ -22,10 +25,25 @@ MARKERS = {
 }
 
 
-def check_config(config=Path("/etc/ssh/sshd_config"), include_base=Path("/etc/ssh")):
+def protected_accounts():
+    users, gids = set(), set()
+    for name in MARKERS.values():
+        try:
+            group = grp.getgrnam(name)
+        except KeyError:
+            continue
+        users.update(group.gr_mem)
+        gids.add(group.gr_gid)
+    users.update(account.pw_name for account in pwd.getpwall() if account.pw_gid in gids)
+    return users
+
+
+def check_config(config=Path("/etc/ssh/sshd_config"), include_base=Path("/etc/ssh"),
+                 protected_users=None):
     expected_group = None
     seen_groups = set()
     visiting = set()
+    protected_users = protected_accounts() if protected_users is None else protected_users
 
     def visit(path, depth=0):
         nonlocal expected_group
@@ -35,6 +53,7 @@ def check_config(config=Path("/etc/ssh/sshd_config"), include_base=Path("/etc/ss
         visiting.add(path)
         try:
             lines = path.read_text().splitlines()
+            foreign_user_block = False
             for number, line in enumerate(lines, 1):
                 stripped = line.strip()
                 if stripped in MARKERS:
@@ -49,17 +68,32 @@ def check_config(config=Path("/etc/ssh/sshd_config"), include_base=Path("/etc/ss
                 args = ([value] if separator and value else []) + parts[1:]
                 keyword = keyword.lower()
                 if keyword == "match":
-                    valid = (expected_group is not None and len(args) == 2
-                             and args[0].lower() == "group" and args[1] == expected_group
-                             and expected_group not in seen_groups)
-                    if not valid:
+                    managed = (expected_group is not None and len(args) == 2
+                               and args[0].lower() == "group" and args[1] == expected_group
+                               and expected_group not in seen_groups)
+                    names = args[1].split(",") if len(args) == 2 and args[0].lower() == "user" else []
+                    disjoint = (expected_group is None and names and all(
+                        re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.-]{0,31}", name)
+                        and not name.startswith("hl-") and name not in protected_users
+                        for name in names))
+                    # Included files may end a literal-user block, never start an
+                    # all-user fallback that could shadow the later managed group.
+                    end_reset = (expected_group is None and foreign_user_block and depth > 0
+                                 and len(args) == 1 and args[0].lower() == "all"
+                                 and not any(shlex.split(rest, comments=True)
+                                             for rest in lines[number:]))
+                    if not (managed or disjoint or end_reset):
                         raise PolicyError(f"{path.name}:{number} 有不受支持的 SSH Match 规则。"
                                           "本版本不自动改写其他账户策略；请管理员评估后使用兼容配置")
-                    seen_groups.add(expected_group)
+                    if managed:
+                        seen_groups.add(expected_group)
                     expected_group = None
+                    foreign_user_block = bool(disjoint)
                 elif expected_group is not None:
                     raise PolicyError("Hermland 管理标记后不是预期的 Match Group，停止操作")
                 elif keyword == "include":
+                    if foreign_user_block:
+                        raise PolicyError("其他账户的 Match User 内不支持 Include，停止操作")
                     if not args:
                         raise PolicyError("SSH Include 路径缺失")
                     for pattern in args:

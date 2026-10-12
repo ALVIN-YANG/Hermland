@@ -1,67 +1,61 @@
 # Hermland
 
-Private remote access to your existing Hermes or OpenClaw — without moving your agent.
+**在另一台 Mac 上，继续使用你自己的 Hermes 或 OpenClaw。** 模型、记忆和会话仍在原来的常驻 Mac 上，不用迁移，也不用把 WebUI 暴露到公网。
 
-Hermland 是 macOS 远程客户端。Agent、模型、记忆和会话仍在你自己的常驻 Mac 上；客户端只建立可信连接并展示原有界面。
+A macOS SSH client for your existing Hermes or OpenClaw. Keep your agent where it is.
 
-当前是 **0.1.0 开发预览**，不是已完成的公共 Beta。没有 Developer ID 签名/公证发行包，独立用户与跨网络验收仍待完成。MIT 开源，不要求域名，不直接公开 WebUI，不提供共享访问令牌。
+<p align="center">
+  <a href="assets/readme/panorama.png"><img src="assets/readme/panorama.png" width="100%" alt="Hermland 功能全景：保留原 Agent 与会话，双 SSH 通道连接自己的 VPS，管理员手动授权公钥，已有 Agent 协助初始化，导入配置后逐项检查，并能单独撤销一台设备。首次使用：初始化、发公钥、导入配置、连接验收。"></a>
+</p>
 
-## 适合谁
+*全景图是原理示意，不是产品截图。当前为 0.1.0 开发预览，尚无正式签名、公证的安装包。*
 
-你已经在使用 Hermes + Hermes WebUI，或 OpenClaw Gateway + Control UI；希望从另一台 Mac 接着使用原来的 Agent，且愿意管理自己的 Debian/Ubuntu VPS。
+## 你能用它做什么
 
-当前支持 macOS 14+ 客户端、常驻 macOS、Debian/Ubuntu 的 SSH 服务。不是云托管 Agent、远程桌面或新的聊天后端，也不负责购买服务器、配置模型和复制 API Key。
+- **接着用原来的 Agent。** 展示 Hermes WebUI 或 OpenClaw Control UI，不另建模型配置、记忆库或聊天后端。
+- **只让授权电脑接入。** 每台电脑独立公钥，私钥留在本机钥匙串；管理员人工确认，客户端固定校验服务器身份。没有共享 Gate 令牌或自动审批。
+- **把配置过程交给已有 Agent。** App 可复制初始化指令、导出配置工具；每步有通过标准，也能按说明手动完成。
+- **看得见哪里通过、哪里失败。** 配置、密钥、SSH、后端健康逐项检查，可复制脱敏报告。健康通过不代表已登录或模型能回答。
+- **单独撤销一台电脑。** 管理员用命令行列出、授权、撤销公钥；撤销会关闭该设备的现有连接并拒绝重连，不动其他设备和 Agent。
 
-## 四步接入
+适合已经有 Hermes + WebUI 或 OpenClaw Gateway + Control UI 的用户。需要 macOS 14+ 客户端、一台在线且不睡眠的常驻 Mac，以及自己的 Debian/Ubuntu VPS。不是云托管 Agent，也不是远程桌面。
 
-1. 选择已有 Agent，复制初始化指令发给它；可从 App 导出配置工具包，没有执行权限时使用手动步骤。
-2. 复制这台电脑的设备公钥，通过可信渠道发送给管理员；每台电脑都由你人工确认。
-3. 导入管理员返回的连接 JSON，核对服务器身份来源。
-4. 连接并查看实际检查结果；在原网页完成登录，由你发送一条消息验收模型。
+## 第一次怎么用
 
-完整的 Agent 指令、六步手动流程和每步通过标准见 [快速开始](docs/快速开始.md)。App 可以复制不含地址、密钥、令牌或聊天的检查报告；配置工具包只含脚本、示例和说明。
+1. **初始化：** 在 App 选择 Hermes 或 OpenClaw，把「初始化指令」发给你平时使用的那个 Agent。它没有执行权限时，按「手动步骤」完成。
+2. **发公钥：** 点「复制设备公钥」，通过可信渠道交给管理员。由你确认这台电脑，管理员才授权；不发送私钥。
+3. **导入配置：** 管理员返回连接 JSON，App 导入后核对来源。文件包含服务器身份，不含密码、私钥或模型 API Key。
+4. **连接验收：** 看四项连接检查，完成原网页登录，再由你发送一条消息确认模型回答。下次打开 App 会自动连接。
 
-## 原理与安全边界
+完整指令、管理员命令、每步通过标准见 **[快速开始](docs/快速开始.md)**。已有正确服务和隧道就复用，不重装 Agent，不改模型，不复制会话。
 
-客户端和常驻 Mac 分别通过 SSH 接到你自己的 VPS，中转只监听回环地址。每台客户端有独立 Ed25519 密钥，私钥放在本机钥匙串；管理员手动授权、列出与撤销公钥。服务器身份来自已核对的管理连接，不盲信首次访问。
+## 连接为什么可信
 
-两段 SSH **不是客户端到常驻 Mac 的端到端加密**；VPS 管理员必须可信。本机其他程序也能访问打开的回环端口。OpenClaw 原有 Gateway 登录和设备身份保留，不把健康检查当成已登录或模型可用。
+客户端和常驻 Mac 各自通过 SSH 接到你的 VPS；VPS 中转端口只在本机监听，不要求域名。客户端设备账户只能转发到指定端口，不能执行 Shell。管理员在家里的 Mini 或其他有管理权限的电脑上操作即可，当前没有管理 GUI。
 
-安装工具会拒绝未经支持的自定义 SSH 条件规则，不自动改写其他账户策略。见 [安全说明](SECURITY.md)、[设备管理](docs/安全门禁.md) 和 [中转原理](docs/远程中转.md)。
+双 SSH **不是客户端到常驻 Mac 的端到端加密**，VPS 管理员必须可信；客户端本机的其他程序也能访问已打开的回环端口。OpenClaw 原有登录与设备身份仍保留。工具只支持可验证的 SSH 规则，遇到通配符、地址条件或可能重叠的账户策略会停止，不改其他服务来凑成功。
 
-## 开发与检查
+[中转原理](docs/远程中转.md) · [公钥授权与撤销](docs/安全门禁.md) · [安全边界与私密漏洞报告](SECURITY.md)
 
-需要完整 Xcode、XcodeGen 和 Python 3.9+。工程由配置生成，构建缓存与个人 Xcode 状态不纳入 Git。
+## 获取 App
+
+还没有可直接推荐给普通用户的正式 Release。开发者可从源码构建；需要完整 Xcode、XcodeGen 和 Python 3.9+，不要关闭 Gatekeeper 或钥匙串保护来运行开发包。
 
 ```bash
 git clone https://github.com/ALVIN-YANG/Hermland.git
-cd Hermland
-bash scripts/check.sh --macos
-cd macos
+cd Hermland/macos
 xcodegen generate
 xcodebuild -project Hermland.xcodeproj -scheme Hermland -configuration Debug \
   -destination 'platform=macOS' -derivedDataPath .build build
 open .build/Build/Products/Debug/Hermland.app
 ```
 
-Python 合约检查：`bash scripts/check.sh`。真实 SSH 验收在隔离容器中运行，覆盖错误密钥、禁 Shell、受限转发、条件规则冲突与撤销；禁止在真实 VPS 上直接运行容器测试脚本。具体命令见 [参与开发](CONTRIBUTING.md)。
+[GitHub CI](https://github.com/ALVIN-YANG/Hermland/actions/workflows/ci.yml) 覆盖秘密扫描、Python 检查、Ubuntu/Debian 真 SSH 授权与撤销、macOS 测试和 Intel/Apple Silicon 通用开发包。CI artifact 未公证，不等同于正式发行。
 
-[GitHub CI](https://github.com/ALVIN-YANG/Hermland/actions/workflows/ci.yml) 检查源码秘密、Python 合约、Ubuntu/Debian 真 SSH、macOS 测试与通用开发包。CI artifact 明确标注未公证，不等同于正式 Release。
+OpenClaw 集成验收脚本对应 2026.9.9，其他上游版本仍需实际验收。当前没有 iOS/Windows 客户端、官方“一行下载”安装器或服务器购买服务。正式签名、公证和独立用户跨网络验收见 [发布与验收](docs/发布与验收.md)。
 
-OpenClaw 集成脚本验证版本为 2026.9.9，可设置 `OPENCLAW_ENTRY` 在隔离容器内验证真实 Gateway、双 SSH、登录拒绝与只读健康 RPC；不发送模型消息。其他上游版本不能只凭测试文件声称兼容。
+## 参与开发
 
-## 打包与发行
+在项目根目录执行 `bash scripts/check.sh --macos`；真实 SSH 容器检查、开发打包与贡献约定见 [CONTRIBUTING](CONTRIBUTING.md)。不要在真实 VPS 上运行隔离容器测试脚本。问题反馈使用 App 的脱敏检查报告，不上传密钥、令牌或聊天记录。
 
-```bash
-bash scripts/package-macos.sh --development
-```
-
-生成 Apple Silicon / Intel 通用开发包、配置工具包和校验值。开发包为临时签名且未公证，不能当作普通用户可直接安装的正式包；不要关闭系统安全保护来运行它。
-
-正式打包入口会检查 Developer ID、Hardened Runtime、Apple 公证和 Gatekeeper。没有这些条件会停止，不静默降级。流程及独立用户验收清单见 [发布与验收](docs/发布与验收.md)。
-
-## 项目范围
-
-复用两个上游的原生页面与认证，不重做聊天、模型配置、Agent 市场或编排系统。当前没有管理 GUI、iOS/Windows 客户端或官方“一行下载”安装器。
-
-问题反馈请提供脱敏的检查结果；漏洞使用 [私密报告](SECURITY.md)。Hermland 代码与项目自有素材采用 [MIT](LICENSE)，上游软件保留各自许可证。
+项目代码与自有素材采用 [MIT](LICENSE)，上游软件保留各自许可证。

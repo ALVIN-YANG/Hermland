@@ -56,6 +56,10 @@ enum SetupResources {
             }
             try files.copyItem(at: source, to: root.appendingPathComponent(name))
         }
+        let artwork = root.appendingPathComponent("assets/readme", isDirectory: true)
+        try files.createDirectory(at: artwork, withIntermediateDirectories: true)
+        try files.copyItem(at: resources.appendingPathComponent("panorama.png"),
+                           to: artwork.appendingPathComponent("panorama.png"))
         // ditto writes only our temporary archive; copyItem refuses a racing overwrite.
         let archive = temporary.appendingPathComponent("HermlandSetup.zip")
         let command = Process()
