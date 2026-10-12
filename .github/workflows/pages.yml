@@ -1,8 +1,15 @@
 name: Download website
 on:
   workflow_dispatch:
-  release:
-    types: [published]
+  # Pages keeps its main-only deployment policy; a release tag is not an allowed source.
+  push:
+    branches: [main]
+    paths:
+      - website/**
+      - scripts/build-website.sh
+      - assets/readme/panorama.png
+      - artwork/icons/hermland-icon-messenger-1024.png
+      - .github/workflows/pages.yml
 permissions:
   contents: read
 concurrency:
