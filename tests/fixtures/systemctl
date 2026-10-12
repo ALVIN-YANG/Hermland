@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Test-only shim: use a real sshd, not systemd, inside the isolated Linux container.
+set -euo pipefail
+[[ ${HERMLAND_ONBOARDING_TEST:-} == isolated && -f /.dockerenv ]] || exit 2
+case "$*" in
+    'is-active --quiet ssh') kill -0 "$(< /run/hermland-test-sshd.pid)" ;;
+    'reload ssh') sshd -t; kill -HUP "$(< /run/hermland-test-sshd.pid)" ;;
+    *) exit 2 ;;
+esac

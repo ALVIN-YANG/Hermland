@@ -1,0 +1,71 @@
+name: Hermland
+options:
+  bundleIdPrefix: land.hermland
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    PRODUCT_NAME: Hermland
+    PRODUCT_BUNDLE_IDENTIFIER: land.hermland.client
+    MARKETING_VERSION: 0.1.0
+    CURRENT_PROJECT_VERSION: 2
+    MACOSX_DEPLOYMENT_TARGET: 14.0
+    SWIFT_VERSION: 5.0
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_FILE: Info.plist
+    INFOPLIST_KEY_CFBundleDisplayName: Hermland
+    INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+    ENABLE_APP_SANDBOX: NO
+    ENABLE_HARDENED_RUNTIME: NO
+    ENABLE_TESTABILITY: YES
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGNING_ALLOWED: YES
+targets:
+  Hermland:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+        excludes:
+          - "**/.DS_Store"
+      - path: Resources/AppIcon.icns
+        buildPhase: resources
+      - path: ../deploy/hermland.py
+        buildPhase: resources
+      - path: ../deploy/ssh_policy.py
+        buildPhase: resources
+      - path: ../deploy/setup-vps.sh
+        buildPhase: resources
+      - path: ../deploy/ssh-device.sh
+        buildPhase: resources
+      - path: ../deploy/ssh-relay.sh
+        buildPhase: resources
+      - path: ../deploy/connection.example.json
+        buildPhase: resources
+      - path: ../deploy/connection.openclaw.example.json
+        buildPhase: resources
+      - path: ../docs/快速开始.md
+        buildPhase: resources
+      - path: ../docs/安全门禁.md
+        buildPhase: resources
+      - path: ../docs/远程中转.md
+        buildPhase: resources
+      - path: ../README.md
+        buildPhase: resources
+      - path: ../LICENSE
+        buildPhase: resources
+  HermlandTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests
+    dependencies:
+      - target: Hermland
+    settings:
+      base:
+        PRODUCT_NAME: HermlandTests
+        PRODUCT_MODULE_NAME: HermlandTests
+        PRODUCT_BUNDLE_IDENTIFIER: land.hermland.client.tests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_IDENTITY: "-"

@@ -8,6 +8,8 @@
 xcuserdata/
 DerivedData/
 .build/
+macos/.build/
+macos/*.xcodeproj/xcuserdata/
 
 node_modules/
 dist/
@@ -16,6 +18,21 @@ dist/
 .env
 .env.*
 !.env.example
+.hermland-mini-password
+.hermland-gate-token
 *.pem
 *.p12
 *.mobileprovision
+__pycache__/
+*.py[cod]
+*.xcresult/
+.swiftpm/
+releases/
+# Historical captures contain this owner's environment, not public demo data.
+artwork/onboarding/captures/
+artwork/onboarding/流程介绍.png
+artwork/onboarding/流程介绍.html
+artwork/onboarding/
+macos/*.xcodeproj/
+gate/*
+!gate/README.md

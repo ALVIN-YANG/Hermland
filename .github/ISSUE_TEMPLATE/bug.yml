@@ -1,0 +1,24 @@
+name: 连接或安装问题
+description: 提供不含秘密的检查结果和复现步骤
+body:
+  - type: markdown
+    attributes:
+      value: 请勿粘贴私钥、模型凭据、Gateway 令牌、完整聊天或未脱敏截图。安全漏洞请走 SECURITY.md 的私密报告入口。
+  - type: input
+    id: versions
+    attributes:
+      label: 版本与环境
+      description: Hermland、macOS、VPS 系统、Hermes WebUI 或 OpenClaw 版本
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostic
+    attributes:
+      label: App 的“复制检查结果”
+      description: 提交前仍需你自己核对，不要附带连接 JSON、凭据或聊天。
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤、预期和实际结果
+    validations:
+      required: true
