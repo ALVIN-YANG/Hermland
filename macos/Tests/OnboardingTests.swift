@@ -100,7 +100,7 @@ final class OnboardingTests: XCTestCase {
         let root = extracted.appendingPathComponent("HermlandSetup")
         for name in ["deploy/ssh_policy.py", "docs/快速开始.md", "README.en.md", "LICENSE", "assets/readme/panorama.png",
                      "assets/readme/how-it-works.svg", "assets/readme/how-it-works.en.svg", "SECURITY.md",
-                     "docs/发布与验收.md", "CONTRIBUTING.md"] {
+                     "docs/发布与验收.md", "docs/外网连接方案对比.md", "docs/外网连接方案对比.en.md", "CONTRIBUTING.md"] {
             XCTAssertTrue(FileManager.default.fileExists(atPath: root.appendingPathComponent(name).path), name)
         }
         let entries = try FileManager.default.contentsOfDirectory(atPath: root.appendingPathComponent("deploy").path)

@@ -104,7 +104,7 @@ mkdir -p "$setup/deploy" "$setup/docs"
 for name in hermland.py ssh_policy.py setup-vps.sh ssh-device.sh ssh-relay.sh connection.example.json connection.openclaw.example.json; do
     cp "deploy/$name" "$setup/deploy/"
 done
-for name in 快速开始 安全门禁 远程中转 发布与验收; do cp "docs/$name.md" "$setup/docs/"; done
+for name in 快速开始 安全门禁 远程中转 发布与验收 外网连接方案对比 外网连接方案对比.en; do cp "docs/$name.md" "$setup/docs/"; done
 cp README.md README.en.md LICENSE SECURITY.md CONTRIBUTING.md "$setup/"
 mkdir -p "$setup/assets/readme"
 cp assets/readme/panorama.png "$setup/assets/readme/"

@@ -4,9 +4,9 @@
 
 **Use your own Hermes or OpenClaw from another Mac.** Your models, memory, and conversations stay on the original always-on Mac. No migration, and no public WebUI endpoint.
 
-[Downloads and release status](https://github.com/ALVIN-YANG/Hermland/releases) · [Website and setup flow](https://alvin-yang.github.io/Hermland/?lang=en) · [Quick start (Chinese)](docs/快速开始.md)
+[Download notarized beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0) · [Website and setup flow](https://alvin-yang.github.io/Hermland/?lang=en) · [Quick start (Chinese)](docs/快速开始.md)
 
-macOS 14+ · Apple Silicon / Intel · MIT. This preview is ad-hoc signed and **not notarized by Apple**. Read the installation notice below.
+macOS 14+ · Universal Apple Silicon / Intel build · MIT. Version 0.1.0 is Developer ID–signed and Apple-notarized. It remains a beta; independent-user and Intel hardware acceptance are still pending.
 
 <p align="center">
   <a href="assets/readme/panorama.png"><img src="assets/readme/panorama.png" width="100%" alt="Hermland overview: keep your existing agent and conversations, connect through two SSH tunnels via your own VPS, authorize device public keys manually, let your existing agent help with setup, import and check the connection, and revoke one device independently. Getting started: initialize, share a public key, import configuration, then verify the connection."></a>
@@ -60,13 +60,15 @@ That is not a claim of stronger security. Tailscale also supports [administrator
 
 The tradeoff: you maintain a VPS, SSH, and the home Mac. **First setup is not guaranteed to be easier than Tailscale.** If you already use Tailscale, need NAS/desktop access to several services, or require relays that cannot decrypt traffic, keep it with appropriate approval and access rules. This version does not inspect or change your VPN and has no Tailscale connection mode.
 
+Still choosing a route? Compare [six remote-access options](docs/外网连接方案对比.en.md): dual SSH, Tailscale, self-hosted WireGuard, Cloudflare Tunnel + Access, direct SSH, and frp. Compare maintenance and trust boundaries; connectivity is not authorization.
+
 ## Get the app
 
-No App Store is needed. Choose the latest public version from [GitHub Releases](https://github.com/ALVIN-YANG/Hermland/releases), unzip it, and move the app to Applications. The toolkit is bundled and available separately. Each release lists checksums, build provenance, and signing/notarization status.
+No App Store is needed. [Download the notarized 0.1.0 beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0), choose `Hermland-0.1.0.zip`, unzip it, move the app to Applications, and open it. The toolkit is bundled; `HermlandSetup-0.1.0.zip` is an optional toolkit, not another app. Checksums and build provenance are attached to the release.
 
-Names ending in `-dev` are ad-hoc signed, unnotarized previews, such as [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1). Packages without `-dev` are published only after Developer ID signing, Apple notarization, stapling, and Gatekeeper checks pass. General users should choose a notarized package. Its normal first-launch confirmation must not require bypassing protection.
+Developer ID signing, Hardened Runtime, secure timestamps, Apple notarization, stapling, and Gatekeeper checks on the extracted final ZIP passed for 0.1.0. A normal first-launch confirmation is expected. If macOS still reports an unverified developer, verify the source, version, and checksum and report it; do not bypass the warning. [Apple's safe-launch guidance](https://support.apple.com/en-us/102445).
 
-This preview is not Developer ID–signed or notarized. macOS may block first launch. Verify the repository, version, and checksum before deciding yourself whether to allow this individual app in Privacy & Security, following [Apple's guidance](https://support.apple.com/en-us/102445). Never disable Gatekeeper globally or run protection-removal scripts. Wait for a notarized release if you prefer not to make this manual trust decision. A website cannot bypass system checks.
+Beta describes pending independent-user, Intel hardware, and broader cross-network testing, not an unsigned package. The old [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1) `-dev.zip` remains unnotarized; choose the new package. Never disable Gatekeeper or run protection-removal scripts. A website is only a download entrance.
 
 An update may prompt for Keychain access. Verify Hermland and handle the prompt yourself; do not delete the existing device key. To build from source, use full Xcode, XcodeGen, and Python 3.9+:
 

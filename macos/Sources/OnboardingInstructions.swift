@@ -71,7 +71,7 @@ enum SetupResources {
                      "connection.example.json", "connection.openclaw.example.json"] {
             try files.copyItem(at: resources.appendingPathComponent(name), to: deploy.appendingPathComponent(name))
         }
-        for name in ["快速开始", "安全门禁", "远程中转", "发布与验收"] {
+        for name in ["快速开始", "安全门禁", "远程中转", "发布与验收", "外网连接方案对比", "外网连接方案对比.en"] {
             guard let source = bundle.url(forResource: name, withExtension: "md") else {
                 throw SSHConnectionError.process("配置说明资源缺失，请重新构建 App。")
             }

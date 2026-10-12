@@ -57,6 +57,10 @@ targets:
         buildPhase: resources
       - path: ../docs/发布与验收.md
         buildPhase: resources
+      - path: ../docs/外网连接方案对比.md
+        buildPhase: resources
+      - path: ../docs/外网连接方案对比.en.md
+        buildPhase: resources
       - path: ../README.md
         buildPhase: resources
       - path: ../README.en.md

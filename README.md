@@ -6,9 +6,9 @@
 
 A macOS SSH client for your existing Hermes or OpenClaw. Keep your agent where it is.
 
-[下载与版本状态](https://github.com/ALVIN-YANG/Hermland/releases) · [官网与使用流程](https://alvin-yang.github.io/Hermland/) · [快速开始](docs/快速开始.md)
+[下载已公证 Beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0) · [官网与使用流程](https://alvin-yang.github.io/Hermland/) · [快速开始](docs/快速开始.md)
 
-macOS 14+ · Apple Silicon / Intel · MIT。预览包为临时签名，**未 Apple 公证**；安装前请阅读下方提示。
+macOS 14+ · Apple Silicon / Intel 通用构建 · MIT。0.1.0 已 Developer ID 签名、Apple 公证；产品仍是 Beta，独立用户与 Intel 实机验收尚未完成。
 
 <p align="center">
   <a href="assets/readme/panorama.png"><img src="assets/readme/panorama.png" width="100%" alt="Hermland 功能全景：保留原 Agent 与会话，双 SSH 通道连接自己的 VPS，管理员手动授权公钥，已有 Agent 协助初始化，导入配置后逐项检查，并能单独撤销一台设备。首次使用：初始化、发公钥、导入配置、连接验收。"></a>
@@ -62,13 +62,15 @@ SSH 是运输通道，不是网页服务。家里的 Mac 主动连到 VPS，Herm
 
 代价也明确：Hermland 需要你维护 VPS、SSH 和常驻机，**不保证比 Tailscale 更容易首次安装**。已有 Tailscale、希望连 NAS/远程桌面等多个服务，或不希望中转能接触明文时，可以继续用 Tailscale 并配置好审批和访问规则，不必为本项目拆掉它。此版本不读取、不修改已有 VPN，也没有 Tailscale 接入模式。
 
+还在选择外网访问方式？看[六种方案对比](docs/外网连接方案对比.md)：双 SSH、Tailscale、自建 WireGuard、Cloudflare Tunnel + Access、直接 SSH、frp。按维护成本和信任边界选择，不把“能连通”当成“已授权”。
+
 ## 获取 App
 
-无需 App Store，即可从 [GitHub Releases](https://github.com/ALVIN-YANG/Hermland/releases) 下载。选择最新公开版本，解压后把 App 移到「应用程序」。配置工具已内置，也提供独立的 `HermlandSetup` ZIP；每版附 SHA256 校验值、构建来源和签名/公证状态。
+无需 App Store。[下载 0.1.0 已公证 Beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0)，选择 `Hermland-0.1.0.zip`，解压后把 App 移到「应用程序」，再打开。配置工具已内置；`HermlandSetup-0.1.0.zip` 是可选独立工具包，不是另一个 App。Release 附 SHA256 校验值与构建来源。
 
-文件名带 `-dev` 的是临时签名、未公证预览，例如 [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1)。不带 `-dev` 的正式安装包只在 Developer ID 签名、Apple 公证、票据附加和 Gatekeeper 检查全部通过后发布。普通用户应选择已公证的包；公证后的首次“是否打开”属于正常系统确认，不应要求绕过保护。
+0.1.0 的 Developer ID 签名、Hardened Runtime、安全时间戳、Apple 公证、票据附加和最终 ZIP 解包后的 Gatekeeper 检查均通过。首次“是否打开”属于正常系统确认；若仍出现“无法验证开发者”，先核对本仓库下载来源、版本和校验值并报告问题，不绕过保护。[苹果的安全启动说明](https://support.apple.com/zh-cn/102445)。
 
-预览版不是 Developer ID 签名、公证的正式版。macOS 可能阻止首次启动；只在核对本仓库来源、版本和校验值后，由你本人根据[苹果说明](https://support.apple.com/zh-cn/102445)决定是否在「隐私与安全性」中允许这一个 App。不要全局关闭 Gatekeeper，不运行去除保护的脚本。不愿手动确认的用户请等待公证版。官网只是下载入口，不绕过系统校验。
+Beta 表示产品仍待独立用户、Intel 实机和更多跨网络验收，不表示未签名。旧 [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1) 的 `-dev.zip` 仍未公证，请选新版。不全局关闭 Gatekeeper，不运行去除保护的脚本；官网只是下载入口。
 
 升级可能弹出钥匙串访问确认，请核对 Hermland 后自行处理，不删除原设备密钥。源码构建需要完整 Xcode、XcodeGen 和 Python 3.9+：
 
