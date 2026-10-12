@@ -42,3 +42,13 @@
 - 本机可用 Developer ID Application 证书为零。预览仍为临时签名、未公证；不关闭 Gatekeeper，不替用户处理系统安全或钥匙串确认。Release / 官网最终发布状态以 GitHub 实际记录为准。
 
 已发布 `v0.1.0-preview.1` 为非草稿 prerelease，源码与构建来源均固定为 `992f5ff`；对应 CI 五项全部通过。公开下载的两个 ZIP 校验值与本地发布包一致，实际 ZIP 在本机恢复原连接和五个原会话标识。官网首次从 Release 标签部署被 GitHub Pages 的 main-only 规则拒绝，修正为从 main 的网站变更或手动触发部署，保留原部署保护，不放开标签权限。
+
+## Developer ID 签名与公证准备
+
+2026-10-12 用户确认已有付费开发者会员，并明确批准为个人发布团队创建 Developer ID Application 证书。已在 Xcode 创建并验证本机签名身份；不导出私钥，不撤销原证书。
+
+- Release 关闭测试可见性和基础调试权限注入，构建号更新为 4；新增实际签名检查，不只检查构建参数。20 项 Python、17 项 macOS 测试通过，无失败或跳过。
+- 本机双架构 Developer ID 试签已验证：严格签名、Hardened Runtime、安全时间戳、团队身份通过，两个架构都没有 `get-task-allow`。试签包仅作本机验收，不作为干净源码正式包发布。
+- 发布脚本新增只读预检、公证回执及原始候选保留、staple 验证、Gatekeeper 检查和源码漂移保护。Apple 等待超时不等于拒绝，不盲目重复提交。
+- 当前 Gatekeeper 返回 `Unnotarized Developer ID`，尚未取得 Apple 公证；本机公证钥匙串配置仍待用户用应用专用密码保存。账号登录密码不能替代应用专用密码。
+- 公开 Release 与官网仍是未公证预览，不提前宣称正式可用。本次没有替换现用 App，没有改动 VPS、Mini、Hermes/OpenClaw 配置、会话或设备私钥。

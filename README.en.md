@@ -4,7 +4,7 @@
 
 **Use your own Hermes or OpenClaw from another Mac.** Your models, memory, and conversations stay on the original always-on Mac. No migration, and no public WebUI endpoint.
 
-[Download preview](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1) · [Website and setup flow](https://alvin-yang.github.io/Hermland/?lang=en) · [Quick start (Chinese)](docs/快速开始.md)
+[Downloads and release status](https://github.com/ALVIN-YANG/Hermland/releases) · [Website and setup flow](https://alvin-yang.github.io/Hermland/?lang=en) · [Quick start (Chinese)](docs/快速开始.md)
 
 macOS 14+ · Apple Silicon / Intel · MIT. This preview is ad-hoc signed and **not notarized by Apple**. Read the installation notice below.
 
@@ -62,7 +62,9 @@ The tradeoff: you maintain a VPS, SSH, and the home Mac. **First setup is not gu
 
 ## Get the app
 
-No App Store is needed: download [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1), unzip `Hermland-0.1.0-dev.zip`, and move the app to Applications. The toolkit is bundled and also available as a separate ZIP. The release includes SHA256 checksums and build provenance.
+No App Store is needed. Choose the latest public version from [GitHub Releases](https://github.com/ALVIN-YANG/Hermland/releases), unzip it, and move the app to Applications. The toolkit is bundled and available separately. Each release lists checksums, build provenance, and signing/notarization status.
+
+Names ending in `-dev` are ad-hoc signed, unnotarized previews, such as [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1). Packages without `-dev` are published only after Developer ID signing, Apple notarization, stapling, and Gatekeeper checks pass. General users should choose a notarized package. Its normal first-launch confirmation must not require bypassing protection.
 
 This preview is not Developer ID–signed or notarized. macOS may block first launch. Verify the repository, version, and checksum before deciding yourself whether to allow this individual app in Privacy & Security, following [Apple's guidance](https://support.apple.com/en-us/102445). Never disable Gatekeeper globally or run protection-removal scripts. Wait for a notarized release if you prefer not to make this manual trust decision. A website cannot bypass system checks.
 

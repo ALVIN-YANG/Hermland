@@ -6,7 +6,7 @@
 
 A macOS SSH client for your existing Hermes or OpenClaw. Keep your agent where it is.
 
-[下载预览版](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1) · [官网与使用流程](https://alvin-yang.github.io/Hermland/) · [快速开始](docs/快速开始.md)
+[下载与版本状态](https://github.com/ALVIN-YANG/Hermland/releases) · [官网与使用流程](https://alvin-yang.github.io/Hermland/) · [快速开始](docs/快速开始.md)
 
 macOS 14+ · Apple Silicon / Intel · MIT。预览包为临时签名，**未 Apple 公证**；安装前请阅读下方提示。
 
@@ -64,7 +64,9 @@ SSH 是运输通道，不是网页服务。家里的 Mac 主动连到 VPS，Herm
 
 ## 获取 App
 
-无需 App Store 即可下载：[0.1.0-preview.1 预览 Release](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1)。下载 `Hermland-0.1.0-dev.zip`，解压后把 App 移到「应用程序」。配置工具已内置，也提供独立的 `HermlandSetup` ZIP；Release 附 SHA256 校验值与构建来源。
+无需 App Store，即可从 [GitHub Releases](https://github.com/ALVIN-YANG/Hermland/releases) 下载。选择最新公开版本，解压后把 App 移到「应用程序」。配置工具已内置，也提供独立的 `HermlandSetup` ZIP；每版附 SHA256 校验值、构建来源和签名/公证状态。
+
+文件名带 `-dev` 的是临时签名、未公证预览，例如 [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1)。不带 `-dev` 的正式安装包只在 Developer ID 签名、Apple 公证、票据附加和 Gatekeeper 检查全部通过后发布。普通用户应选择已公证的包；公证后的首次“是否打开”属于正常系统确认，不应要求绕过保护。
 
 预览版不是 Developer ID 签名、公证的正式版。macOS 可能阻止首次启动；只在核对本仓库来源、版本和校验值后，由你本人根据[苹果说明](https://support.apple.com/zh-cn/102445)决定是否在「隐私与安全性」中允许这一个 App。不要全局关闭 Gatekeeper，不运行去除保护的脚本。不愿手动确认的用户请等待公证版。官网只是下载入口，不绕过系统校验。
 
