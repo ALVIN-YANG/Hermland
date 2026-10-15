@@ -14,6 +14,17 @@ struct OnboardingActions: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            if let fingerprint = SSHConfiguration.fingerprint(store.devicePublicKey) {
+                Text("本机公钥指纹").font(SetupTheme.supportFont)
+                Text(fingerprint).font(SetupTheme.codeFont).textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("授权前，与对方报告的这一串识别码核对。私钥留在本机钥匙串。")
+                    .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
+            }
+            Button(preparing ? "准备连接卡…" : (promptCopied ? "连接卡已复制" : "复制连接卡")) { copyRequest() }
+                .buttonStyle(SetupPrimaryButtonStyle()).disabled(preparing)
+            Text(promptCopied ? "下一步：回到原 Agent 对话，粘贴并发送。这里还没有授权任何设备。" : "点击后只复制；不会自动发送、登录服务器或授权。")
+                .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
             DisclosureGroup("查看公钥与完整指令") {
                 if let request = try? OnboardingInstructions.request(
                     for: store.sshConfiguration.backend,
@@ -26,10 +37,6 @@ struct OnboardingActions: View {
                 }
                 Button("仅复制设备公钥") { Task { await store.copyDevicePublicKey() } }
             }
-            Button(preparing ? "准备连接卡…" : (promptCopied ? "连接卡已复制" : "复制连接卡")) { copyRequest() }
-                .buttonStyle(SetupPrimaryButtonStyle()).disabled(preparing)
-            Text(promptCopied ? "已复制，还没发送。请回到原 Agent 对话粘贴发送。" : "只复制，不会自动发送或授权。")
-                .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
             DisclosureGroup("Agent 无法执行？查看手动方式") {
                 Text("Agent 能取得项目源码时，无需发送工具包。否则导出工具包，发到家里的 Mac 解压；不能执行命令时，由你或管理员按部署指南操作。")
                     .font(SetupTheme.supportFont).foregroundStyle(HermlandColor.secondary)

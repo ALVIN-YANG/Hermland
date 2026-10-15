@@ -14,19 +14,21 @@ struct MobileSetupScreen: View {
                 importAction: importAction
             ) { context in
                 VStack(alignment: .leading, spacing: 16) {
-                    DisclosureGroup("查看这台设备的公钥指纹") {
-                        if let key = store.identity {
-                            Text(key.fingerprint).font(.system(.callout, design: .monospaced)).textSelection(.enabled)
+                    if let key = store.identity {
+                        Text("本机公钥指纹").font(SetupTheme.supportFont)
+                        Text(key.fingerprint).font(SetupTheme.codeFont).textSelection(.enabled)
+                            .fixedSize(horizontal: false, vertical: true)
+                        DisclosureGroup("查看设备公钥") {
                             Text(key.publicKey).font(.system(.callout, design: .monospaced)).textSelection(.enabled)
-                        } else {
-                            Text("分享时生成本机公钥，私钥留在本机钥匙串。")
                         }
+                    } else {
+                        Text("分享时生成本机公钥，私钥留在本机钥匙串。")
                     }
                     Button("分享连接卡") {
                         store.firstSetup = context.firstSetup
                         store.prepareShare(server: context.serverForRequest)
                     }.buttonStyle(SetupPrimaryButtonStyle())
-                    Text("在分享面板中复制，再回到原 Agent 对话粘贴发送；不会自动发送或授权。")
+                    Text("在分享面板中复制，再回到原 Agent 对话粘贴发送；这不会自动授权设备。")
                         .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
                     Button("Agent 无法执行？查看手动方式") { showManualGuide = true }
                         .buttonStyle(.plain).font(SetupTheme.supportFont).foregroundStyle(SetupTheme.accent)

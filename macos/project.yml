@@ -8,8 +8,8 @@ settings:
   base:
     PRODUCT_NAME: Hermland
     PRODUCT_BUNDLE_IDENTIFIER: land.hermland.client
-    MARKETING_VERSION: 0.2.0
-    CURRENT_PROJECT_VERSION: 6
+    MARKETING_VERSION: 0.2.1
+    CURRENT_PROJECT_VERSION: 7
     MACOSX_DEPLOYMENT_TARGET: 14.0
     SWIFT_VERSION: 5.0
     GENERATE_INFOPLIST_FILE: YES
@@ -54,6 +54,8 @@ targets:
         buildPhase: resources
       - path: ../docs/快速开始.md
         buildPhase: resources
+      - path: ../docs/准备中转服务器.md
+        buildPhase: resources
       - path: ../docs/安全门禁.md
         buildPhase: resources
       - path: ../docs/远程中转.md
@@ -69,6 +71,10 @@ targets:
       - path: ../README.en.md
         buildPhase: resources
       - path: ../assets/readme/panorama.png
+        buildPhase: resources
+      - path: ../assets/readme/welcome-0.2.0.png
+        buildPhase: resources
+      - path: ../assets/readme/server-setup-0.2.0.png
         buildPhase: resources
       - path: ../assets/readme/how-it-works.svg
         buildPhase: resources

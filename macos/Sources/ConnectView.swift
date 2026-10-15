@@ -3,7 +3,6 @@ import UniformTypeIdentifiers
 
 struct ConnectView: View {
     @ObservedObject var store: AppState
-    @State private var importing = false
     @State private var manual = false
     @State private var pendingConfiguration: SSHConfiguration?
     @State private var filename = "连接配置.json"
@@ -14,7 +13,7 @@ struct ConnectView: View {
             SetupFlowView(
                 backend: $store.sshConfiguration.backend, deviceName: "这台 Mac",
                 initialPage: store.sshConfiguration.host.isEmpty ? .welcome : .connection,
-                message: store.banner, isConnecting: store.isConnecting, importAction: { importing = true }
+                message: store.banner, isConnecting: store.isConnecting, importAction: importConfiguration
             ) { context in
                 OnboardingActions(
                     store: store, purpose: context.firstSetup ? .firstSetup : .additionalDevice,
@@ -46,21 +45,24 @@ struct ConnectView: View {
         .onChange(of: store.sshConfiguration.backend) { _, backend in
             if backend == .hermes { store.sshConfiguration.controlUIPath = "/" }
         }
-        .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
-            switch result {
-            case .success(let url):
-                do {
-                    let configuration = try store.readSSHConfiguration(from: url)
-                    filename = url.lastPathComponent
-                    pendingConfiguration = configuration
-                    store.banner = nil
-                } catch { store.banner = error.localizedDescription }
-            case .failure(let error):
-                if (error as NSError).code != NSUserCancelledError {
-                    store.banner = "配置文件未导入。请重新选择管理员返回的 JSON。"
-                }
-            }
-        }
+    }
+
+    private func importConfiguration() {
+        // Explicit native selection avoids SwiftUI fileImporter disabling valid JSON on the tested macOS.
+        let panel = NSOpenPanel()
+        panel.title = "选择 Agent 或管理员返回的连接文件"
+        panel.prompt = "核对文件"
+        panel.allowedContentTypes = [.json]
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            let configuration = try store.readSSHConfiguration(from: url)
+            filename = url.lastPathComponent
+            pendingConfiguration = configuration
+            store.banner = nil
+        } catch { store.banner = error.localizedDescription }
     }
 
     private func connection(wide: Bool) -> some View {
@@ -71,7 +73,7 @@ struct ConnectView: View {
             HStack(alignment: .top, spacing: 36) {
                 VStack(alignment: .leading, spacing: 20) {
                     Text(store.sshConfiguration.displayAddress).font(SetupTheme.bodyFont).textSelection(.enabled)
-                    Button("导入连接文件…") { importing = true }.controlSize(.large)
+                    Button("导入连接文件…", action: importConfiguration).controlSize(.large)
                     if let fingerprint = SSHConfiguration.fingerprint(store.sshConfiguration.serverPublicKey) {
                         DisclosureGroup("已保存的服务器指纹") {
                             Text(fingerprint).font(SetupTheme.codeFont).textSelection(.enabled)

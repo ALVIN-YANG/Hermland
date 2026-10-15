@@ -21,6 +21,9 @@ final class OnboardingTests: XCTestCase {
             XCTAssertTrue(prompt.contains("不能主动申请或自动审批"))
             XCTAssertTrue(prompt.contains("不重装、不升级、不迁移"))
             XCTAssertTrue(prompt.contains("模型测试由我本人发送"))
+            XCTAssertTrue(prompt.contains("可保存的 .json 连接文件"))
+            XCTAssertTrue(prompt.contains("本机设备公钥指纹与 VPS 服务器指纹"))
+            XCTAssertTrue(prompt.contains("不虚构文件或检查结果"))
         }
         XCTAssertTrue(OnboardingInstructions.prompt(for: .openclaw).contains("--backend openclaw"))
         XCTAssertTrue(OnboardingInstructions.prompt(for: .openclaw).contains("不安装 Hermes"))
@@ -98,7 +101,8 @@ final class OnboardingTests: XCTestCase {
         process.waitUntilExit()
         XCTAssertEqual(process.terminationStatus, 0)
         let root = extracted.appendingPathComponent("HermlandSetup")
-        for name in ["deploy/ssh_policy.py", "docs/快速开始.md", "README.en.md", "LICENSE", "assets/readme/panorama.png",
+        for name in ["deploy/ssh_policy.py", "docs/快速开始.md", "docs/准备中转服务器.md", "README.en.md", "LICENSE", "assets/readme/panorama.png",
+                     "assets/readme/welcome-0.2.0.png", "assets/readme/server-setup-0.2.0.png",
                      "assets/readme/how-it-works.svg", "assets/readme/how-it-works.en.svg", "SECURITY.md",
                      "docs/发布与验收.md", "docs/外网连接方案对比.md", "docs/外网连接方案对比.en.md", "CONTRIBUTING.md"] {
             XCTAssertTrue(FileManager.default.fileExists(atPath: root.appendingPathComponent(name).path), name)

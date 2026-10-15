@@ -216,6 +216,7 @@ final class ConnectionStore: ObservableObject {
                 只用已有可信管理 SSH，不复制管理私钥，不关闭服务器身份校验或原 Gateway 认证。
                 \(backend == .openclaw ? "复用 OpenClaw Gateway/Control UI；check、relay-install、export 加 --backend openclaw，保留原 token/password 和设备校验。不安装 Hermes。" : "复用 Hermes 和 Hermes WebUI，不改模型或重建会话。")
                 最后返回已授权设备的连接 JSON，不附密码、令牌或私钥。失败停在当前步骤；链路检查不代表模型测试通过。
+                给我看的进度请说清在哪台机器操作、当前结果和需要我做什么。完成后返回可保存的 .json 文件，并报告本机设备公钥指纹与 VPS 服务器指纹供我分别核对；不虚构文件或成功结果。
                 """
         } catch { self.error = error.localizedDescription }
     }

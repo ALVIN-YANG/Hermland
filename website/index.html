@@ -23,15 +23,17 @@
   </header>
   <main id="main">
     <section class="shell hero">
+      <div class="hero-copy">
       <p class="eyebrow" data-i18n="eyebrow">为你已经在用的 Hermes / OpenClaw</p>
       <h1><span data-i18n="headline1">家里的 Agent，</span><span class="accent" data-i18n="headline2">出门也能用。</span></h1>
       <p class="intro" data-i18n="intro">在外面的 Mac 打开 Hermland，接着用家里的 Agent。原来的模型、记忆和会话都在，不必再配置一遍。</p>
       <div class="actions"><a class="button primary" href="#download" data-i18n="downloadHero">下载 Mac 版</a><a class="text-link" href="#before" data-i18n="seeFlow">先看需要准备什么 ↓</a></div>
       <p class="meta" data-i18n="platform">0.2.0 Beta · macOS 14+ · Apple Silicon / Intel</p>
       <p class="meta" data-i18n="signed">已签名、Apple 公证 · 免费开源</p>
-      <figure class="app-preview">
-        <a href="assets/welcome-0.2.0.png"><img src="assets/welcome-0.2.0.png" width="2200" height="1480" alt="Hermland 原生欢迎页：选择 Hermes 或 OpenClaw，点开始连接；已有连接文件可以直接导入。" data-i18n-alt="welcomeAlt" fetchpriority="high"></a>
-        <figcaption data-i18n="previewCaption">0.2.0 原生界面预览 · 从选择你已有的 Agent 开始，不是重新安装 Agent。</figcaption>
+      </div>
+      <figure class="hero-scene">
+        <img src="assets/connection-scene.png" width="1774" height="887" alt="家里的桌面 Mac 通过你的云服务器，连接到外出的 Mac；暖金连接线串起三个位置。" data-i18n-alt="sceneAlt" fetchpriority="high">
+        <figcaption class="scene-labels"><span data-i18n="sceneHome">家里的 Mac<small>Agent 在这里</small></span><span data-i18n="sceneRelay">你的服务器<small>只转接连接</small></span><span data-i18n="sceneAway">身边的 Mac<small>打开 Hermland</small></span></figcaption>
       </figure>
     </section>
 
@@ -53,13 +55,17 @@
             </ol>
             <a class="text-link" href="https://github.com/ALVIN-YANG/Hermland/blob/main/docs/准备中转服务器.md" data-i18n="serverGuide">打开服务器准备指南 ↗</a>
           </div>
-          <figure><a href="assets/server-setup-0.2.0.png"><img src="assets/server-setup-0.2.0.png" width="2200" height="1480" alt="Hermland 服务器准备页：选择我有云服务器或还没有，填写服务器地址和 SSH 端口。" data-i18n-alt="serverAlt" loading="lazy"></a><figcaption data-i18n="serverCaption">原生界面预览：这里只有地址和端口，不收管理员密码。</figcaption></figure>
+          <figure><a href="assets/server-setup-0.2.1.png"><img src="assets/server-setup-0.2.1.png" width="2200" height="1600" alt="Hermland 服务器准备页：选择我有云服务器或还没有，填写服务器地址和 SSH 端口。" data-i18n-alt="serverAlt" loading="lazy"></a><figcaption data-i18n="serverCaption">原生界面预览：这里只有地址和端口，不收管理员密码。</figcaption></figure>
         </div>
       </details>
     </section>
 
     <section class="setup-band" id="setup"><div class="shell section">
       <div class="section-heading"><p class="eyebrow" data-i18n="setupEyebrow">第一次连接</p><h2 data-i18n="setupTitle">配置交给原 Agent，授权由你确认。</h2><p data-i18n="setupIntro">继续用你平时与 Hermes / OpenClaw 对话的入口。它有执行权限时可以协助配置；没有权限，就由你或管理员按手动指南执行。</p></div>
+      <figure class="app-preview">
+        <a href="assets/connection-card-0.2.1.png"><img src="assets/connection-card-0.2.1.png" width="2200" height="1600" alt="Hermland 连接卡原生界面预览：复制连接卡、核对本机公钥指纹、回原对话授权，再收回 JSON 文件导入。使用公开示例指纹。" data-i18n-alt="previewAlt" loading="lazy"></a>
+        <figcaption data-i18n="previewCaption">0.2.1 原生界面预览，使用公开示例指纹；不是已授权或已连接的结果。</figcaption>
+      </figure>
       <ol class="steps">
         <li><span class="step-number" aria-hidden="true">1</span><div><h3 data-i18n="step1Title">打开 App，填服务器地址</h3><p data-i18n="step1Body">在外出的 Mac 选择已有的 Hermes / OpenClaw，点「开始连接」。填写自己的 VPS 地址和 SSH 端口，确认你或管理员已能可信登录。</p><p class="criterion" data-i18n="step1Check">这一步完成：服务器准备好了。还没准备好？先看上面的 VPS 指引。</p></div></li>
         <li><span class="step-number" aria-hidden="true">2</span><div><h3 data-i18n="step2Title">发连接卡，核对后授权</h3><p data-i18n="step2Body">点「复制连接卡」，回到原 Agent 对话粘贴发送。卡片已带上本机公钥和配置指令。核对它报告的设备名、公钥指纹，再明确回复同意授权；首次配置还要核对家里 Mac 的公钥。</p><p class="criterion" data-i18n="step2Check">这一步完成：收到一个 .json 连接文件。没有执行权限，就点 App 内的「查看手动方式」。</p></div></li>

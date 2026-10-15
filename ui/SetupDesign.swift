@@ -90,6 +90,27 @@ struct SetupHeading: View {
     }
 }
 
+/// A task instruction, not an automatically verified success state.
+struct SetupInstructionRow: View {
+    let number: String
+    let title: String
+    let detail: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 14) {
+            Text(number).font(SetupTheme.labelFont).foregroundStyle(SetupTheme.accent)
+                .frame(width: 30, height: 30)
+                .background(SetupTheme.accent.opacity(0.08), in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title).font(SetupTheme.labelFont)
+                Text(detail).font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+}
+
 struct ConnectionPrinciplesView: View {
     @Environment(\.dismiss) private var dismiss
     var body: some View {
