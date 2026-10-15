@@ -4,9 +4,9 @@
 
 **Use your own Hermes or OpenClaw from another Mac.** Your models, memory, and conversations stay on the original always-on Mac. No migration, and no public WebUI endpoint.
 
-[Download notarized beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0) · [Website and setup flow](https://alvin-yang.github.io/Hermland/?lang=en) · [Quick start (Chinese)](docs/快速开始.md)
+[Download notarized beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.2.0) · [Website and setup flow](https://alvin-yang.github.io/Hermland/?lang=en) · [Quick start (Chinese)](docs/快速开始.md)
 
-macOS 14+ · Universal Apple Silicon / Intel build · MIT. Version 0.1.0 is Developer ID–signed and Apple-notarized. It remains a beta; independent-user and Intel hardware acceptance are still pending.
+macOS 14+ · Universal Apple Silicon / Intel build · MIT. Version 0.2.0 is Developer ID–signed and Apple-notarized. It remains a beta; independent-user and Intel hardware acceptance are still pending.
 
 <p align="center">
   <a href="assets/readme/panorama.png"><img src="assets/readme/panorama.png" width="100%" alt="Hermland overview: keep your existing agent and conversations, connect through two SSH tunnels via your own VPS, authorize device public keys manually, let your existing agent help with setup, import and check the connection, and revoke one device independently. Getting started: initialize, share a public key, import configuration, then verify the connection."></a>
@@ -64,9 +64,9 @@ Still choosing a route? Compare [six remote-access options](docs/外网连接方
 
 ## Get the app
 
-No App Store is needed. [Download the notarized 0.1.0 beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0), choose `Hermland-0.1.0.zip`, unzip it, move the app to Applications, and open it. The toolkit is bundled; `HermlandSetup-0.1.0.zip` is an optional toolkit, not another app. Checksums and build provenance are attached to the release.
+No App Store is needed. [Download the notarized 0.2.0 beta](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.2.0), choose `Hermland-0.2.0.zip`, unzip it, move the app to Applications, and open it. The toolkit is bundled; `HermlandSetup-0.2.0.zip` is an optional toolkit, not another app. Checksums and build provenance are attached to the release.
 
-Developer ID signing, Hardened Runtime, secure timestamps, Apple notarization, stapling, and Gatekeeper checks on the extracted final ZIP passed for 0.1.0. A normal first-launch confirmation is expected. If macOS still reports an unverified developer, verify the source, version, and checksum and report it; do not bypass the warning. [Apple's safe-launch guidance](https://support.apple.com/en-us/102445).
+Developer ID signing, Hardened Runtime, secure timestamps, Apple notarization, stapling, and Gatekeeper checks on the extracted final ZIP passed for 0.2.0. A normal first-launch confirmation is expected. If macOS still reports an unverified developer, verify the source, version, and checksum and report it; do not bypass the warning. [Apple's safe-launch guidance](https://support.apple.com/en-us/102445).
 
 Beta describes pending independent-user, Intel hardware, and broader cross-network testing, not an unsigned package. The old [0.1.0-preview.1](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0-preview.1) `-dev.zip` remains unnotarized; choose the new package. Never disable Gatekeeper or run protection-removal scripts. A website is only a download entrance.
 

@@ -37,9 +37,9 @@
     <section class="shell section" id="setup">
       <div class="section-heading"><p class="eyebrow">01 / SETUP</p><h2 data-i18n="setupTitle">三步接入，不再来回填配置。</h2><p data-i18n="setupIntro">推荐让你平时使用的 Agent 协助；没有执行权限，就按内置手动步骤完成。人工授权不省略。</p></div>
       <ol class="steps">
-        <li><span class="step-number" aria-hidden="true">1</span><div><h3 data-i18n="step1Title">复制材料，手动发出</h3><p data-i18n="step1Body">选择已有后端，点「复制配置材料」。公钥、指纹和指令一起发给原 Agent 或可信管理员，不发到尚未连通的 Hermland。</p><span class="criterion" data-i18n="step1Check">可验证：材料含本机公钥，不含私钥或令牌。</span></div></li>
-        <li><span class="step-number" aria-hidden="true">2</span><div><h3 data-i18n="step2Title">核对指纹，确认授权</h3><p data-i18n="step2Body">对方报告电脑和指纹后，由你明确确认。首次配置时，常驻机公钥也要另行手动核对。没有主动申请或自动批准。</p><span class="criterion" data-i18n="step2Check">可验证：授权记录的指纹与要授权的机器一致。</span></div></li>
-        <li><span class="step-number" aria-hidden="true">3</span><div><h3 data-i18n="step3Title">导入配置，检查并使用</h3><p data-i18n="step3Body">点「导入并检查…」，确认配置来源和服务器指纹后自动检查。再完成原网页登录，由你发一条消息验证真实回答。</p><span class="criterion" data-i18n="step3Check">可验证：四项检查通过，原会话可见，模型真实回答。</span></div></li>
+        <li><span class="step-number" aria-hidden="true">1</span><div><h3 data-i18n="step1Title">准备中转服务器</h3><p data-i18n="step1Body">在 App 选已有 Agent，点「开始连接」，填写自己的 VPS 地址与 SSH 端口。还没有服务器，就按页面指引准备。</p><span class="criterion" data-i18n="step1Check">可验证：你或管理员已核对服务器身份并能登录；填写地址不代表已连通。</span></div></li>
+        <li><span class="step-number" aria-hidden="true">2</span><div><h3 data-i18n="step2Title">发连接卡，确认授权</h3><p data-i18n="step2Body">点「复制连接卡」，回原 Agent 对话粘贴发送。核对它报告的设备名和公钥指纹后，再明确确认授权；首次常驻机公钥须另行核对。</p><span class="criterion" data-i18n="step2Check">可验证：只发送公钥与配置要求，私钥留在本机。复制不等于授权。</span></div></li>
+        <li><span class="step-number" aria-hidden="true">3</span><div><h3 data-i18n="step3Title">导入文件，检查并使用</h3><p data-i18n="step3Body">点「我收到连接文件了」，选择返回的 JSON。核对来源和服务器指纹后连接检查，再完成原网页登录，由你发消息验证真实回答。</p><span class="criterion" data-i18n="step3Check">可验证：四项检查通过，原会话可见，模型真实回答。</span></div></li>
       </ol>
       <div class="use-modes"><p><strong data-i18n="firstTitle">第一次：</strong><span data-i18n="firstBody">准备或复用中转，只补缺失组件。</span></p><p><strong data-i18n="addTitle">新增电脑：</strong><span data-i18n="addBody">只授权新公钥，不重装 Agent 或重建隧道。</span></p><p><strong data-i18n="dailyTitle">日常：</strong><span data-i18n="dailyBody">打开 App，用已保存的配置自动连接。</span></p></div>
       <a class="text-link" href="https://github.com/ALVIN-YANG/Hermland/blob/main/docs/快速开始.md" data-i18n="manual">完整手动命令与通过标准 ↗</a>
@@ -59,10 +59,10 @@
     <section class="shell section download" id="download">
       <div class="section-heading"><p class="eyebrow">03 / DOWNLOAD</p><h2 data-i18n="downloadTitle">已签名、公证，按正常流程安装。</h2><p data-i18n="downloadIntro">无需 App Store。下载解压，把 Hermland 移到「应用程序」，再打开。配置工具已经内置，不需要在客户端再装一个 Agent。</p></div>
       <div class="release-panel">
-        <div class="release-top"><div><span class="release-kind">NOTARIZED BETA</span><h3>0.1.0</h3><p data-i18n="releasePlatform">macOS 14+ · 通用架构 · ZIP</p></div><a class="button light" href="https://github.com/ALVIN-YANG/Hermland/releases/download/v0.1.0/Hermland-0.1.0.zip" data-i18n="downloadZip">下载 App ZIP ↗</a></div>
+        <div class="release-top"><div><span class="release-kind">NOTARIZED BETA</span><h3>0.2.0</h3><p data-i18n="releasePlatform">macOS 14+ · 通用架构 · ZIP</p></div><a class="button light" href="https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.0/Hermland-0.2.0.zip" data-i18n="downloadZip">下载 App ZIP ↗</a></div>
         <p class="release-warning" data-i18n="releaseWarning">Developer ID 签名、Apple 公证和 Gatekeeper 检查已通过。产品仍是 Beta，独立用户与 Intel 实机验收尚未完成。</p>
         <p data-i18n="releaseNotice">首次“是否打开”是正常系统确认；若仍提示无法验证开发者，核对来源、版本和 SHA256 并报告问题，不绕过保护。不要关闭 Gatekeeper 或运行去除保护的脚本。升级后的钥匙串提示需你自行确认。旧 -dev 预览仍未公证，请选新版。</p>
-        <div class="release-links"><a href="https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.1.0" data-i18n="releaseNotes">Release · 工具包 · 校验值 ↗</a><a id="apple-guide" href="https://support.apple.com/zh-cn/102445" data-i18n="apple">苹果的安全启动说明 ↗</a><a id="readme" href="https://github.com/ALVIN-YANG/Hermland/blob/main/README.md" data-i18n="source">源码构建 ↗</a></div>
+        <div class="release-links"><a href="https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.2.0" data-i18n="releaseNotes">Release · 工具包 · 校验值 ↗</a><a id="apple-guide" href="https://support.apple.com/zh-cn/102445" data-i18n="apple">苹果的安全启动说明 ↗</a><a id="readme" href="https://github.com/ALVIN-YANG/Hermland/blob/main/README.md" data-i18n="source">源码构建 ↗</a></div>
       </div>
     </section>
     <section class="shell section faq" id="faq">
