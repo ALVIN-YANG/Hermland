@@ -27,9 +27,9 @@ struct MobileSetupScreen: View {
                         store.prepareShare(server: context.serverForRequest)
                     }.buttonStyle(SetupPrimaryButtonStyle())
                     Text("在分享面板中复制，再回到原 Agent 对话粘贴发送；不会自动发送或授权。")
-                        .font(.callout).foregroundStyle(.secondary)
+                        .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
                     Button("Agent 无法执行？查看手动方式") { showManualGuide = true }
-                        .buttonStyle(.plain).font(.callout).foregroundStyle(SetupTheme.accent)
+                        .buttonStyle(.plain).font(SetupTheme.supportFont).foregroundStyle(SetupTheme.accent)
                 }
             } connection: { _ in
                 VStack(alignment: .leading, spacing: 20) {
@@ -37,7 +37,7 @@ struct MobileSetupScreen: View {
                     Button("导入连接文件", action: importAction).buttonStyle(SetupPrimaryButtonStyle())
                 }
             }
-            Button("先看离线演示", action: demoAction).font(.callout).padding(.bottom, 12)
+            Button("先看离线演示", action: demoAction).font(SetupTheme.supportFont).padding(.bottom, 12)
         }
         .navigationTitle("Hermland").navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showManualGuide) { VPSSetupGuide(backendTitle: store.backend.title) }

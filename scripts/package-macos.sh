@@ -73,19 +73,7 @@ if [[ "$mode" == --signed ]]; then
     # Preserve the exact submitted candidate for later stapling if Apple's wait times out.
     ditto "$app" "$task_notary_dir/Hermland.app"
     cp "$task_package_dir/notarize.zip" "$task_notary_dir/submitted.zip"
-    task_submit_exit=0
-    xcrun notarytool submit "$task_package_dir/notarize.zip" --keychain-profile "$HERMLAND_NOTARY_PROFILE" \
-        --wait --timeout 20m --output-format json > "$task_notary_dir/result.json" 2> "$task_notary_dir/submit.stderr" \
-        || task_submit_exit=$?
-    task_submission=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("id", ""))' \
-        "$task_notary_dir/result.json" 2>/dev/null || true)
-    if [[ "$task_submission" =~ ^[0-9a-fA-F-]{36}$ ]]; then
-        xcrun notarytool log "$task_submission" --keychain-profile "$HERMLAND_NOTARY_PROFILE" \
-            "$task_notary_dir/log.json" > /dev/null 2> "$task_notary_dir/log.stderr" || true
-    fi
-    [[ "$task_submit_exit" == 0 ]] || fail "Apple 提交/等待未确认成功，不生成正式包；原始签名候选与回执保留在 $task_notary_dir，先查状态，不盲目重复提交"
-    python3 -c 'import json,sys; result=json.load(open(sys.argv[1])); sys.exit(0 if result.get("status")=="Accepted" else 1)' \
-        "$task_notary_dir/result.json" || fail "Apple 公证未通过，不生成正式包；回执与诊断保留在 $task_notary_dir"
+    bash scripts/notarize-macos.sh "$task_package_dir/notarize.zip" "$HERMLAND_NOTARY_PROFILE" "$task_notary_dir"
     xcrun stapler staple "$app"
     xcrun stapler validate "$app"
     spctl --assess --type execute --verbose "$app"

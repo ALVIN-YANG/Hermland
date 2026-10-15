@@ -17,7 +17,7 @@ struct SetupConnectionReview: View {
             SetupHeading(title: "核对来源，再连接", subtitle: "只导入你自己的 Agent 或可信管理员发回的文件。")
             HStack(spacing: 16) {
                 Image(systemName: "doc.text").font(.title).foregroundStyle(SetupTheme.accent)
-                Text(filename).font(.headline).lineLimit(2)
+                Text(filename).font(SetupTheme.labelFont).lineLimit(2)
                 Spacer()
                 Button("取消导入", action: cancel)
             }
@@ -29,19 +29,19 @@ struct SetupConnectionReview: View {
                     Text(
                         "\(configuration.user) · 远端本机端口 \(configuration.remotePort) · 界面 \(configuration.controlUIPath)"
                     )
-                    .font(.callout).textSelection(.enabled)
+                    .font(SetupTheme.supportFont).textSelection(.enabled)
                 }
                 Divider()
-                Text("服务器指纹").font(.headline)
+                Text("服务器指纹").font(SetupTheme.labelFont)
                 Text(SSHConfiguration.fingerprint(configuration.serverPublicKey) ?? "无效指纹")
-                    .font(.system(.callout, design: .monospaced)).textSelection(.enabled)
+                    .font(SetupTheme.codeFont).textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
                 Text("通过可信渠道，与管理员提供的指纹核对。配置文件本身不能证明来源。")
-                    .font(.callout).foregroundStyle(.secondary)
+                    .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
             }.padding(22).background(SetupTheme.surface(scheme), in: RoundedRectangle(cornerRadius: 16))
             Button("来源可信，连接并检查", action: accept).buttonStyle(SetupPrimaryButtonStyle())
             Text("确认后才检查服务器身份、设备授权和 Agent 服务。检查通过后，沿用原网页登录，再发一条消息确认回复。")
-                .font(.callout).foregroundStyle(.secondary)
+                .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
         }
     }
 }

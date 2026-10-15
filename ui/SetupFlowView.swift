@@ -55,7 +55,7 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                     }
                     if let message {
                         Label(message, systemImage: "exclamationmark.circle")
-                            .font(.callout).foregroundStyle(.red).textSelection(.enabled)
+                            .font(SetupTheme.supportFont).foregroundStyle(.red).textSelection(.enabled)
                     }
                 }
                 .padding(wide ? 44 : 24)
@@ -65,6 +65,7 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .font(SetupTheme.bodyFont)
         .background(SetupTheme.canvas(scheme)).foregroundStyle(.primary).tint(SetupTheme.accent)
         .onChange(of: isConnecting) { _, connecting in
             if connecting { page = .connection }
@@ -94,7 +95,7 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                 .buttonStyle(.plain).foregroundStyle(SetupTheme.accent)
                 if page != .connection {
                     Text(context.firstSetup ? "首次连接 · \(page == .server ? 1 : 2)/3" : "新增这台设备")
-                        .font(.callout).foregroundStyle(.secondary).padding(.leading, 14)
+                        .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary).padding(.leading, 14)
                 }
             }
             Spacer()
@@ -127,7 +128,7 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
         VStack(alignment: .leading, spacing: 28) {
             SetupHeading(title: "家里的 Agent，\n出门也能用", subtitle: "连接你已有的 Agent，原来的记忆和会话都在。")
             VStack(alignment: .leading, spacing: 12) {
-                Text("你平时用哪一个？").font(.headline)
+                Text("你平时用哪一个？").font(SetupTheme.labelFont)
                 HStack(spacing: 12) {
                     ForEach(AgentBackend.allCases) { option in
                         choice(option.title, selected: backend == option) { backend = option }
@@ -145,27 +146,27 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                 Button("其他设备已连好？新增\(deviceName)") {
                     context.firstSetup = false
                     page = .card
-                }.buttonStyle(.plain).font(.callout).foregroundStyle(.secondary)
+                }.buttonStyle(.plain).font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
             }
         }
     }
 
     private func server(wide: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 24) {
+        VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 24) {
                 SetupHeading(title: "准备一台中转服务器", subtitle: "它在外面和家里之间转接连接，不用搬走你的 Agent。")
-                if wide { SetupScene(deviceName: deviceName, showLabels: false).frame(width: 260, height: 135) }
+                if wide { SetupScene(deviceName: deviceName, showLabels: false).frame(width: 260, height: 112) }
             }
-            Text("你有自己的云服务器吗？").font(.title3.weight(.semibold))
+            Text("你有自己的云服务器吗？").font(SetupTheme.labelFont)
             HStack(spacing: 12) {
                 choice("我有云服务器", selected: hasServer) { hasServer = true }
                 choice("还没有", selected: !hasServer) { hasServer = false }
-            }
+            }.frame(maxWidth: 560)
             if hasServer {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack(alignment: .top, spacing: 16) {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("服务器地址").font(.callout)
+                            Text("服务器地址").font(SetupTheme.supportFont)
                             TextField("你的公网 IP 或域名", text: $context.server.host)
                                 .textContentType(.URL)
                                 #if os(iOS)
@@ -173,26 +174,26 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                                 #endif
                         }
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("SSH 端口").font(.callout)
+                            Text("SSH 端口").font(SetupTheme.supportFont)
                             TextField("22", text: $context.server.port)
                                 #if os(iOS)
                                     .keyboardType(.numberPad)
                                 #endif
-                        }.frame(width: 100)
-                    }.textFieldStyle(.roundedBorder).controlSize(.large)
+                        }.frame(width: 128)
+                    }.textFieldStyle(SetupTextFieldStyle()).frame(maxWidth: 560)
                     Text("需要 Debian / Ubuntu；地址不含账号、密码或 https://。")
-                        .font(.callout).foregroundStyle(.secondary)
+                        .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
                     Toggle("我或管理员已核对服务器身份，并能通过 SSH 登录", isOn: $context.server.administratorReady)
-                        .toggleStyle(.switch).font(.callout)
+                        .toggleStyle(.switch).font(SetupTheme.supportFont)
                     Button("不会登录？查看服务器准备指引") { showVPSGuide = true }.buttonStyle(.plain)
                         .foregroundStyle(SetupTheme.accent)
                     if context.server.administratorReady && !context.server.isReady {
                         Text("请只填写 IP 或域名；SSH 端口须为 1–65535，不要填写账号、密码或网址。")
-                            .font(.callout).foregroundStyle(.orange)
+                            .font(SetupTheme.supportFont).foregroundStyle(.orange)
                     }
                 }
                 Text("下一步让原 Agent 配置中转。这里不会登录服务器，也不会保存管理密码。")
-                    .font(.callout).foregroundStyle(.secondary)
+                    .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
                 Button("继续，交给我的 Agent") { page = .card }
                     .buttonStyle(SetupPrimaryButtonStyle()).disabled(!context.server.isReady)
                     .frame(maxWidth: wide ? 380 : .infinity)
@@ -205,12 +206,12 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                     Button("查看详细准备指引") { showVPSGuide = true }
                     Button("服务器准备好了，填写地址") { hasServer = true }
                         .buttonStyle(SetupPrimaryButtonStyle()).frame(maxWidth: wide ? 380 : .infinity)
-                }.font(.body)
+                }.font(SetupTheme.bodyFont)
             }
             Button("其他设备已经能用 Hermland？只添加\(deviceName)") {
                 context.firstSetup = false
                 page = .card
-            }.buttonStyle(.plain).font(.callout).foregroundStyle(SetupTheme.accent)
+            }.buttonStyle(.plain).font(SetupTheme.supportFont).foregroundStyle(SetupTheme.accent)
         }
     }
 
@@ -221,15 +222,15 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                 subtitle: "回到你平时使用的 \(backend.title) 对话，粘贴发送这张连接卡。")
             HStack(alignment: .center, spacing: 36) {
                 VStack(alignment: .leading, spacing: 18) {
-                    Label("\(deviceName) 的连接卡", systemImage: "doc.text").font(.title3.weight(.semibold))
+                    Label("\(deviceName) 的连接卡", systemImage: "doc.text").font(SetupTheme.labelFont)
                     VStack(alignment: .leading, spacing: 8) {
                         Text("复用我现有的 \(backend.title)")
                         Text(context.firstSetup ? "配置我的中转服务器" : "只添加这台设备，不重新部署")
                         Text("授权 \(deviceName) 前，先让我确认")
-                    }.foregroundStyle(.secondary)
+                    }.foregroundStyle(SetupTheme.secondary)
                     cardActions(context)
                     Button("我收到连接文件了", action: importAction)
-                        .buttonStyle(.bordered).controlSize(.large).frame(maxWidth: .infinity)
+                        .buttonStyle(SetupSecondaryButtonStyle())
                 }
                 .padding(wide ? 26 : 20).frame(maxWidth: .infinity, alignment: .leading)
                 .background(SetupTheme.surface(scheme), in: RoundedRectangle(cornerRadius: 18))
@@ -237,7 +238,7 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
                 if wide { SetupScene(deviceName: deviceName, showLabels: false).frame(width: 320) }
             }
             Label("对方提出授权时，核对设备名和公钥指纹，再在原对话确认。", systemImage: "info.circle")
-                .font(.callout).foregroundStyle(.secondary)
+                .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
         }
     }
 
@@ -245,7 +246,7 @@ struct SetupFlowView<CardActions: View, Connection: View>: View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Image(systemName: selected ? "largecircle.fill.circle" : "circle").foregroundStyle(SetupTheme.accent)
-                Text(title).font(.body.weight(.medium))
+                Text(title).font(SetupTheme.bodyFont.weight(.medium))
                 Spacer(minLength: 0)
             }.padding(16).frame(maxWidth: .infinity, minHeight: 24)
                 .background(

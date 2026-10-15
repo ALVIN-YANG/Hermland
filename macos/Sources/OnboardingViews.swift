@@ -19,20 +19,20 @@ struct OnboardingActions: View {
                     for: store.sshConfiguration.backend,
                     purpose: purpose, publicKey: store.devicePublicKey, server: server)
                 {
-                    Text(request).font(.system(.callout, design: .monospaced)).textSelection(.enabled)
+                    Text(request).font(SetupTheme.codeFont).textSelection(.enabled)
                 } else {
                     Text("复制连接卡时准备本机公钥；私钥留在钥匙串，不会发送。")
-                        .font(.callout).foregroundStyle(.secondary)
+                        .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
                 }
                 Button("仅复制设备公钥") { Task { await store.copyDevicePublicKey() } }
             }
             Button(preparing ? "准备连接卡…" : (promptCopied ? "连接卡已复制" : "复制连接卡")) { copyRequest() }
                 .buttonStyle(SetupPrimaryButtonStyle()).disabled(preparing)
             Text(promptCopied ? "已复制，还没发送。请回到原 Agent 对话粘贴发送。" : "只复制，不会自动发送或授权。")
-                .font(.callout).foregroundStyle(.secondary)
+                .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
             DisclosureGroup("Agent 无法执行？查看手动方式") {
                 Text("Agent 能取得项目源码时，无需发送工具包。否则导出工具包，发到家里的 Mac 解压；不能执行命令时，由你或管理员按部署指南操作。")
-                    .font(.caption).foregroundStyle(HermlandColor.secondary)
+                    .font(SetupTheme.supportFont).foregroundStyle(HermlandColor.secondary)
                 HStack {
                     Button(exporting ? "正在导出…" : "导出工具包…") { export() }.disabled(exporting)
                     Button("查看手动部署指南") {
@@ -42,7 +42,7 @@ struct OnboardingActions: View {
                     }
                 }
             }
-            if let notice { Text(notice).font(.caption).textSelection(.enabled) }
+            if let notice { Text(notice).font(SetupTheme.supportFont).textSelection(.enabled) }
         }
         .onChange(of: store.sshConfiguration.backend) { _, _ in invalidateCopy() }
         .onChange(of: purpose) { _, _ in invalidateCopy() }
@@ -134,15 +134,15 @@ struct ConnectionChecksView: View {
                             Text(check.phase.title)
                             Spacer()
                             Text(check.result.rawValue).foregroundStyle(color(check.result))
-                        }.font(.caption)
+                        }.font(SetupTheme.supportFont)
                         if !check.detail.isEmpty {
-                            Text(check.detail).font(.caption).foregroundStyle(HermlandColor.secondary)
+                            Text(check.detail).font(SetupTheme.supportFont).foregroundStyle(HermlandColor.secondary)
                         }
                     }
                 }
             }
             Text("最后请在原网页完成登录，再发送一条消息验证模型回答。此检查不发送模型请求。")
-                .font(.caption).foregroundStyle(HermlandColor.secondary)
+                .font(SetupTheme.supportFont).foregroundStyle(HermlandColor.secondary)
             Button(copied ? "检查结果已复制" : "复制检查结果") {
                 let version =
                     Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "开发版"

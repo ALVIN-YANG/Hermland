@@ -70,11 +70,11 @@ struct ConnectView: View {
                 subtitle: "使用上次的连接配置，或导入管理员发回的新文件。")
             HStack(alignment: .top, spacing: 36) {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text(store.sshConfiguration.displayAddress).font(.body).textSelection(.enabled)
+                    Text(store.sshConfiguration.displayAddress).font(SetupTheme.bodyFont).textSelection(.enabled)
                     Button("导入连接文件…") { importing = true }.controlSize(.large)
                     if let fingerprint = SSHConfiguration.fingerprint(store.sshConfiguration.serverPublicKey) {
                         DisclosureGroup("已保存的服务器指纹") {
-                            Text(fingerprint).font(.system(.callout, design: .monospaced)).textSelection(.enabled)
+                            Text(fingerprint).font(SetupTheme.codeFont).textSelection(.enabled)
                         }
                     }
                     Button(store.isConnecting ? "正在检查…" : "连接并检查") {
@@ -105,13 +105,13 @@ struct ConnectView: View {
     private func field(_ title: String, text: Binding<String>, placeholder: String) -> some View {
         HStack {
             Text(title).frame(width: 100, alignment: .leading)
-            TextField(placeholder, text: text).textFieldStyle(.roundedBorder)
+            TextField(placeholder, text: text).textFieldStyle(SetupTextFieldStyle())
         }
     }
     private func port(_ title: String, value: Binding<Int>) -> some View {
         HStack {
             Text(title).frame(width: 100, alignment: .leading)
-            TextField("端口", value: value, format: .number).textFieldStyle(.roundedBorder)
+            TextField("端口", value: value, format: .number).textFieldStyle(SetupTextFieldStyle())
         }
     }
 }

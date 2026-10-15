@@ -1,7 +1,19 @@
 import SwiftUI
 
 enum SetupTheme {
+    #if os(macOS)
+        static let bodyFont = Font.system(size: 17)
+        static let supportFont = Font.system(size: 16)
+        static let labelFont = Font.system(size: 18, weight: .semibold)
+        static let codeFont = Font.system(size: 16, design: .monospaced)
+    #else
+        static let bodyFont = Font.body
+        static let supportFont = Font.callout
+        static let labelFont = Font.headline
+        static let codeFont = Font.system(.callout, design: .monospaced)
+    #endif
     static let accent = Color("SetupAccent")
+    static let secondary = Color("SetupSecondary")
     static let buttonFill = Color(red: 0.26, green: 0.40, blue: 0.57)
     static let amber = Color(red: 0.91, green: 0.73, blue: 0.45)
     static func canvas(_ scheme: ColorScheme) -> Color {
@@ -15,13 +27,34 @@ enum SetupTheme {
 struct SetupPrimaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var enabled
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label.font(.body.weight(.semibold)).frame(maxWidth: .infinity, minHeight: 46)
+        configuration.label.font(SetupTheme.bodyFont.weight(.semibold)).frame(maxWidth: 340, minHeight: 52)
             .foregroundStyle(.white)
             .background(
                 SetupTheme.buttonFill.opacity(enabled ? (configuration.isPressed ? 0.8 : 1) : 0.4),
                 in: RoundedRectangle(cornerRadius: 12)
             )
             .contentShape(RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+struct SetupSecondaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label.font(SetupTheme.bodyFont.weight(.medium)).frame(maxWidth: 340, minHeight: 50)
+            .foregroundStyle(SetupTheme.accent)
+            .background(
+                SetupTheme.accent.opacity(configuration.isPressed ? 0.12 : 0.03), in: RoundedRectangle(cornerRadius: 12)
+            )
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(SetupTheme.accent.opacity(0.4)))
+    }
+}
+
+struct SetupTextFieldStyle: TextFieldStyle {
+    @Environment(\.colorScheme) private var scheme
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration.textFieldStyle(.plain).font(SetupTheme.bodyFont)
+            .padding(.horizontal, 14).padding(.vertical, 12).frame(minHeight: 50)
+            .background(SetupTheme.surface(scheme), in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(.primary.opacity(0.16)))
     }
 }
 
@@ -36,9 +69,9 @@ struct SetupScene: View {
                     Text("家里的 Mac").frame(maxWidth: .infinity)
                     Text("你的云服务器").frame(maxWidth: .infinity)
                     Text(deviceName).frame(maxWidth: .infinity)
-                }.font(.callout).foregroundStyle(.secondary)
+                }.font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary)
                 Text("Agent 留在家里，服务器只负责中转。")
-                    .font(.callout).foregroundStyle(.secondary).padding(.top, 8)
+                    .font(SetupTheme.supportFont).foregroundStyle(SetupTheme.secondary).padding(.top, 8)
             }
         }
     }
@@ -47,11 +80,12 @@ struct SetupScene: View {
 struct SetupHeading: View {
     let title: String
     let subtitle: String
-    @ScaledMetric(relativeTo: .largeTitle) private var titleSize = 32
+    @ScaledMetric(relativeTo: .largeTitle) private var titleSize = 34
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title).font(.system(size: titleSize, weight: .semibold)).fixedSize(horizontal: false, vertical: true)
-            Text(subtitle).font(.body).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+            Text(subtitle).font(SetupTheme.bodyFont).foregroundStyle(SetupTheme.secondary).fixedSize(
+                horizontal: false, vertical: true)
         }
     }
 }
@@ -77,8 +111,8 @@ struct ConnectionPrinciplesView: View {
     }
     private func explanation(_ title: String, _ text: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.headline)
-            Text(text).foregroundStyle(.secondary)
+            Text(title).font(SetupTheme.labelFont)
+            Text(text).foregroundStyle(SetupTheme.secondary)
         }
     }
 }
