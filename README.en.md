@@ -4,13 +4,13 @@
 
 **Your Hermes / OpenClaw stays home. Take access with you.** Open Hermland on another Mac and keep using your existing agent. Models, memory, and conversations stay in place, without exposing the agent’s web interface to the internet.
 
-[Download for Mac](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.0/Hermland-0.2.0.zip) · [Website](https://alvin-yang.github.io/Hermland/?lang=en) · [Full setup guide (Chinese)](docs/快速开始.md)
+[Download for Mac](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.1/Hermland-0.2.1.zip) · [Website](https://alvin-yang.github.io/Hermland/?lang=en) · [Full setup guide (Chinese)](docs/快速开始.md)
 
-0.2.0 Beta · macOS 14+ · Universal Apple Silicon / Intel · Signed and Apple-notarized · Free, MIT open source
+0.2.1 Beta · macOS 14+ · Universal Apple Silicon / Intel · Signed and Apple-notarized · Free, MIT open source
 
 ![Native Hermland welcome screen: choose your existing Hermes or OpenClaw, start connecting, or import a connection file. The app UI is in Chinese.](assets/readme/welcome-0.2.0.png)
 
-*Native 0.2.0 interface preview. Hermland is a connection tool, not another agent or a remote desktop. The app and detailed manual guides currently use Chinese; button labels below match the app.*
+*Native welcome-screen preview. See the [website](https://alvin-yang.github.io/Hermland/?lang=en#setup) for the updated server and connection-card screens. Hermland is a connection tool, not another agent or a remote desktop. The app and detailed manual guides currently use Chinese; button labels below match the app.*
 
 ## What you need
 
@@ -79,9 +79,9 @@ This illustrated overview describes concepts. Follow the app and the steps above
 
 ## Get the app
 
-[Download Hermland-0.2.0.zip](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.0/Hermland-0.2.0.zip) → unzip → move to Applications → open. Quit the old version before upgrading. The toolkit is bundled; `HermlandSetup-0.2.0.zip` is an optional standalone toolkit, not a second app.
+[Download Hermland-0.2.1.zip](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.1/Hermland-0.2.1.zip) → unzip → move to Applications → open. Quit the old version before upgrading. The toolkit is bundled; `HermlandSetup-0.2.1.zip` is an optional standalone toolkit, not a second app.
 
-Developer ID signing, Apple notarization, stapling, and Gatekeeper checks on the extracted final ZIP passed for 0.2.0. Check the [release notes, SHA256, and build provenance](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.2.0). A normal first-launch confirmation is expected. Verify Hermland before handling Keychain prompts yourself; do not delete the device key. If macOS reports an unverified developer, check the source and version, then report it. **Do not disable Gatekeeper or run protection-removal scripts.** See [Apple’s safe-launch guidance](https://support.apple.com/en-us/102445).
+Developer ID signing, Apple notarization, stapling, and Gatekeeper checks on the extracted final ZIP passed for 0.2.1. Check the [release notes, SHA256, and build provenance](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.2.1). A normal first-launch confirmation is expected. Verify Hermland before handling Keychain prompts yourself; do not delete the device key. If macOS reports an unverified developer, check the source and version, then report it. **Do not disable Gatekeeper or run protection-removal scripts.** See [Apple’s safe-launch guidance](https://support.apple.com/en-us/102445).
 
 **Still a beta:** independent first-time-user, Intel hardware, and broader cross-network acceptance are pending. No independent security audit is claimed. Old `-dev` packages are unnotarized; use the current package. OpenClaw integration acceptance targets 2026.9.9; other versions need verification. The iOS app is [in development and testing](ios/README.md), not submitted or available to download. No Windows client, server purchasing service, or official one-line installer is provided. See the [release and acceptance notes (Chinese)](docs/发布与验收.md).
 

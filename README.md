@@ -4,13 +4,13 @@
 
 **家里的 Hermes / OpenClaw，出门也能用。** 在另一台 Mac 打开 Hermland，接着用原来的 Agent。模型、记忆和会话留在家里，不用重新配置，也不用把 Agent 网页开放到公网。
 
-[下载 Mac 版](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.0/Hermland-0.2.0.zip) · [官网](https://alvin-yang.github.io/Hermland/) · [完整配置指南](docs/快速开始.md)
+[下载 Mac 版](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.1/Hermland-0.2.1.zip) · [官网](https://alvin-yang.github.io/Hermland/) · [完整配置指南](docs/快速开始.md)
 
-0.2.0 Beta · macOS 14+ · Apple Silicon / Intel 通用版 · 已签名、Apple 公证 · 免费、MIT 开源
+0.2.1 Beta · macOS 14+ · Apple Silicon / Intel 通用版 · 已签名、Apple 公证 · 免费、MIT 开源
 
 ![Hermland 原生欢迎页：选择已经在用的 Hermes 或 OpenClaw，开始连接；也可以直接导入已有连接文件。](assets/readme/welcome-0.2.0.png)
 
-*0.2.0 原生界面预览。Hermland 是连接工具，不是另一个 Agent，也不是远程桌面。*
+*原生欢迎界面预览。新版 VPS 与连接卡界面见[官网](https://alvin-yang.github.io/Hermland/#setup)。Hermland 是连接工具，不是另一个 Agent，也不是远程桌面。*
 
 ## 开始前，你需要什么
 
@@ -79,9 +79,9 @@ Hermland 专门连接一个 Agent 网页，复用自己的 VPS 和 Mac 自带 SS
 
 ## 获取 App
 
-[下载 Hermland-0.2.0.zip](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.0/Hermland-0.2.0.zip) → 解压 → 移到「应用程序」→ 打开。升级前先退出旧版。配置工具已内置，`HermlandSetup-0.2.0.zip` 只是可选独立工具包，不是第二个 App。
+[下载 Hermland-0.2.1.zip](https://github.com/ALVIN-YANG/Hermland/releases/download/v0.2.1/Hermland-0.2.1.zip) → 解压 → 移到「应用程序」→ 打开。升级前先退出旧版。配置工具已内置，`HermlandSetup-0.2.1.zip` 只是可选独立工具包，不是第二个 App。
 
-0.2.0 已通过 Developer ID 签名、Apple 公证、票据附加和最终 ZIP 解包后的 Gatekeeper 检查。[版本说明、SHA256 与构建来源](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.2.0)可供核对。首次“是否打开”是正常确认；钥匙串提示由你核对后处理，不删除设备密钥。若提示无法验证开发者，请核对来源和版本并反馈，**不要关闭 Gatekeeper 或运行去除保护的脚本**。见[苹果的安全打开说明](https://support.apple.com/zh-cn/102445)。
+0.2.1 已通过 Developer ID 签名、Apple 公证、票据附加和最终 ZIP 解包后的 Gatekeeper 检查。[版本说明、SHA256 与构建来源](https://github.com/ALVIN-YANG/Hermland/releases/tag/v0.2.1)可供核对。首次“是否打开”是正常确认；钥匙串提示由你核对后处理，不删除设备密钥。若提示无法验证开发者，请核对来源和版本并反馈，**不要关闭 Gatekeeper 或运行去除保护的脚本**。见[苹果的安全打开说明](https://support.apple.com/zh-cn/102445)。
 
 **当前仍是 Beta：** 独立新用户、Intel 实机和更多跨网络验收待完成，未声称通过独立安全审计。旧 `-dev` 包未公证，请选新版。OpenClaw 集成验收对应 2026.9.9，其他版本需实际验证。iOS [正在开发验收](ios/README.md)，尚未提交审核或开放下载；暂无 Windows 客户端、服务器代购或官方一行安装器。详见[发布与验收](docs/发布与验收.md)。
 
