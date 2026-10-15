@@ -1,31 +1,126 @@
 // Static translation only. No tracking, API requests, storage, or credentials.
 const english = {
-  vpnTitle:"Why not just use Tailscale / a VPN?",vpnBody:"We focus on one agent WebUI: reuse your VPS and macOS SSH, without another VPN client or hosted mesh account, and manually authorize a computer for one relay port. Tailscale is not unsafe: it supports device approval and port restrictions, and DERP relays cannot decrypt its end-to-end encrypted traffic. Our SSH hops require trust in the VPS administrator and you must maintain the VPS; first setup is not necessarily easier. Keep Tailscale if you already use it, need several services, or require relays that cannot decrypt traffic. This app has no Tailscale mode and does not change your VPN.",
-  skip:"Skip to content",navSetup:"Setup",navPrinciple:"How it works",eyebrow:"YOUR MAC · YOUR AGENT · YOUR CONNECTION",
-  headline1:"Your agent stays home.",headline2:"Your access comes along.",intro:"Use your existing Hermes or OpenClaw from another Mac. Keep your models, memory, and conversations in place, without exposing the WebUI to the internet.",downloadHero:"Download notarized beta",seeFlow:"See the three steps ↓",platform:"macOS 14+ · Apple Silicon / Intel · MIT open source",previewHero:"Developer ID–signed · Apple-notarized · Beta",
-  artCaption:"Concept illustration, not a product screenshot. The app groups these operations into three steps.",requirementsTitle:"Before you start",requirements:"Existing Hermes + WebUI or OpenClaw Gateway + Control UI · An online, awake home Mac · Your Debian / Ubuntu VPS and trusted administrator SSH",
-  setupTitle:"Three steps. Less copying and configuration.",setupIntro:"Ask the agent you already use to help. If it cannot execute commands, follow the bundled manual guide. Human authorization stays in place.",
-  step1Title:"Prepare your relay server",step1Body:"Choose your existing agent and click “开始连接” (start connecting). Enter your own VPS address and SSH port. If you do not have a server, follow the preparation guide.",step1Check:"Verify: you or your administrator has checked its identity and can log in. Entering an address is not a connection test.",
-  step2Title:"Send a card, then approve",step2Body:"Click “复制连接卡” (copy connection card) and paste it into your usual agent conversation. Check the reported device and key fingerprint, then explicitly approve authorization. Check the home Mac's relay key separately on first setup.",step2Check:"Verify: only public keys and instructions are shared. Private keys stay local. Copying is not approval.",
-  step3Title:"Import, check, and use",step3Body:"Click “我收到连接文件了” (I have the connection file) and select the returned JSON. Check the source and server fingerprint before connecting. Complete the original web login and send a message yourself to verify a real response.",step3Check:"Verify: four checks pass, original chats are visible, and the model answers.",
-  firstTitle:"First setup:",firstBody:"Prepare or reuse the relay; add only missing components.",addTitle:"Another Mac:",addBody:"Authorize a new key, without reinstalling services.",dailyTitle:"Daily use:",dailyBody:"Open the app; reconnect using your saved configuration.",manual:"Manual commands and pass criteria (Chinese) ↗",
-  principleTitle:"Both ends connect. The page stays original.",principleIntro:"SSH carries traffic; it does not generate the page. Both Macs initiate connections to your VPS. No inbound port on your home router or domain name is needed.",client:"Client Mac",clientNote:"Device private key stays in local Keychain",vps:"Your VPS",relay:"Traffic relay only",relayNote:"Manual key approval · Loopback relay port",home:"Home Mac",homeNote:"Original models, memory, and chats",arrowNote:"Arrows show who initiates the connection. Messages flow both ways. Loopback ports listen only on their own machine.",
-  trustTitle:"What do you trust?",trustBody:"Share the public key; keep the private key. SSH verifies possession of the private key for an approved public key. The app also pins the server key. Knowing an IP, public key, or JSON does not grant access.",boundary:"Trust the VPS administrator: two SSH hops are not end-to-end encryption from client to home. Other local programs can reach the client's open loopback port. Keep the original agent login enabled.",
-  downloadTitle:"Signed and notarized. Install normally.",downloadIntro:"No App Store needed. Unzip the download, move Hermland to Applications, and open it. The toolkit is included; do not install another agent on the client.",releasePlatform:"macOS 14+ · Universal binary · ZIP",downloadZip:"Download app ZIP ↗",releaseWarning:"Developer ID signing, Apple notarization, and Gatekeeper checks passed. This remains a beta; independent-user and Intel hardware acceptance are pending.",releaseNotice:"A normal first-launch confirmation is expected. If macOS still reports an unverified developer, check the source, version, and SHA256 and report it; do not bypass protection. Never disable Gatekeeper or run protection-removal scripts. Handle update-related Keychain prompts yourself. The old -dev preview remains unnotarized; choose the new package.",releaseNotes:"Release · Toolkit · Checksums ↗",apple:"Apple's safe-launch guidance ↗",source:"Build from source ↗",
-  comparison:"Compare six remote-access options ↗",
-  faqTitle:"Correct use matters more than another button.",faq1Title:"Can I use it while the home Mac is asleep or off?",faq1Body:"No. Keep the home Mac online, logged in, and awake. The current user-login service cannot wake a powered-off Mac.",faq2Title:"All four checks pass. Why won't the model answer?",faq2Body:"Checks verify configuration, device keys, SSH, and backend health without sending model tasks. Complete the original login and test a real response yourself. The original agent still manages credentials and conversations.",faq3Title:"How do I revoke a lost computer?",faq3Body:"Use trusted administrator SSH from your Mini or another management Mac to revoke its public key. Its active connections close and new ones are rejected, without deleting chats or affecting other devices. No management GUI yet.",faq4Title:"Do I need Screen Recording, Accessibility, or autossh?",faq4Body:"Hermland needs no Screen Recording or Accessibility permission. Agent desktop-tool permissions are separate. New relays use macOS launchd and SSH, without an autossh install. Existing services stay unchanged.",faq5Title:"What if I have no VPS, or my agent runs on Linux?",faq5Body:"This setup path requires your Debian/Ubuntu VPS and an always-on Mac. There is no server purchasing service or unverified one-line installer. Direct access to a Linux agent is not a supported mode in this version.",faq6Title:"Does this website store my public keys or chats?",faq6Body:"No. It is a static introduction with no accounts, forms, connection requests, or chat backend, and no analytics scripts. GitHub hosts browsing and downloads. App traffic passes through your own VPS.",footer:"Signed and notarized beta. No claim of an independent security audit or first-time-user acceptance. The app and detailed manual guides currently use Chinese.",security:"Security boundaries and reporting (Chinese) ↗"
+  "skip": "Skip to content",
+  "navSetup": "How to use it",
+  "navPrinciple": "How it works",
+  "eyebrow": "FOR THE HERMES / OPENCLAW YOU ALREADY USE",
+  "headline1": "Your agent stays home.",
+  "headline2": "Take access with you.",
+  "intro": "Open Hermland on another Mac and keep using your agent at home. Your models, memory, and conversations stay in place. No second setup for your models.",
+  "downloadHero": "Download for Mac",
+  "seeFlow": "See what you need first ↓",
+  "platform": "0.2.0 Beta · macOS 14+ · Apple Silicon / Intel",
+  "signed": "Signed and Apple-notarized · Free and open source",
+  "welcomeAlt": "Native Hermland welcome screen: select Hermes or OpenClaw, start connecting, or import an existing connection file. The app UI is in Chinese.",
+  "previewCaption": "Native 0.2.0 interface preview. Choose the agent you already use; you are not installing another agent.",
+  "beforeEyebrow": "BEFORE YOU START",
+  "beforeTitle": "Three roles. One familiar agent.",
+  "beforeIntro": "Hermland connects to your agent; it does not host one. You need these for first setup. Later, opening the app reconnects with your saved configuration.",
+  "role1Label": "Your home Mac",
+  "role1Title": "Where the agent runs",
+  "role1Body": "Your existing Hermes + WebUI, or OpenClaw Gateway + Control UI. Keep this Mac online, logged in, and awake.",
+  "role2Label": "Your cloud server · VPS",
+  "role2Title": "Connects the two Macs",
+  "role2Body": "Your own Debian / Ubuntu server, managed by someone you trust. No domain name or inbound port on your home router is needed.",
+  "role3Label": "The Mac you take with you",
+  "role3Title": "Where you open Hermland",
+  "role3Body": "macOS 14 or later. Install only Hermland here, not another Hermes / OpenClaw. No need to enter model API keys again.",
+  "serverTitle": "No VPS yet? Start here",
+  "serverExplain": "A VPS is a cloud server you rent and pay the provider for. It relays connections; your agent does not move there.",
+  "server1": "Create a Debian / Ubuntu server with a provider you trust. Note its public IP and SSH port, usually 22.",
+  "server2": "Verify its identity through the provider console, then confirm that you or your administrator can log in over SSH. Ask a trusted person to help if this is unfamiliar.",
+  "server3": "Enter the IP and port in the app. Your existing agent can then help configure the relay. Entering an address does not install software or authorize a device.",
+  "serverGuide": "Open the server preparation guide (Chinese) ↗",
+  "serverAlt": "Native server preparation screen: choose an existing server or the no-server path, then enter its address and SSH port. Chinese UI.",
+  "serverCaption": "Native interface preview: address and port only. No administrator password is collected.",
+  "setupEyebrow": "YOUR FIRST CONNECTION",
+  "setupTitle": "Your agent helps set up. You approve access.",
+  "setupIntro": "Use the conversation where you already talk to Hermes / OpenClaw. With execution tools, it can help configure the relay. Otherwise, you or your administrator follows the manual guide.",
+  "step1Title": "Open the app. Enter your server.",
+  "step1Body": "On the Mac you take with you, select your existing agent and click “开始连接” (start connecting). Enter your VPS address and SSH port. Confirm that you or your administrator can already log in through a verified connection.",
+  "step1Check": "Done when: the server is ready. If not, use the VPS guide above first.",
+  "step2Title": "Send a card. Check and approve.",
+  "step2Body": "Click “复制连接卡” (copy connection card) and paste it into your usual agent conversation. It includes this Mac’s public key and setup instructions. Check the reported device name and key fingerprint before explicitly approving access. First setup also requires checking the home Mac’s relay key.",
+  "step2Check": "Done when: you receive a .json connection file. No execution tools? Use “查看手动方式” (manual setup) in the app.",
+  "step3Title": "Import the file. Check the connection.",
+  "step3Body": "Save the file on this Mac. Click “我收到连接文件了” (I have the connection file) and select it. Check its trusted source and server fingerprint before connecting. Once the four checks pass, complete the original web login and send a message to verify a real response.",
+  "step3Check": "Done when: your original chats are visible and the agent answers. Health checks send no model messages.",
+  "manual": "Prefer to do it yourself? Commands and pass criteria (Chinese) ↗",
+  "dailyTitle": "For everyday use",
+  "dailyBody": "Open Hermland. It reconnects with the saved configuration. Keep the home Mac and relay server online.",
+  "addTitle": "For another Mac",
+  "addBody": "Choose “其他设备已连好？新增这台 Mac” (add this Mac). Authorize only the new computer, without reinstalling your agent or server. An existing connection file can be imported directly.",
+  "principleEyebrow": "HOW IT WORKS",
+  "principleTitle": "The same agent at home. A new way to reach it.",
+  "principleIntro": "Each Mac initiates its own connection to your VPS. Hermland uses this route to display your original agent’s web interface. It does not take over your models or migrate your chats.",
+  "client": "Your client Mac",
+  "clientNote": "Use the original web interface",
+  "vps": "Your VPS",
+  "relay": "Relays connections",
+  "relayNote": "Your agent does not move here",
+  "home": "Your home Mac",
+  "homeNote": "Models, memory, and chats stay here",
+  "arrowNote": "Arrows show connection initiation; messages travel both ways. Only SSH needs an internet-facing entry, not your agent’s web port.",
+  "trustTitle": "An address is not permission",
+  "trustBody": "Each computer has its own keys. The private key stays in local Keychain. An administrator registers only public keys you explicitly approve, and the app verifies the server’s identity. Knowing the IP or having a connection file does not grant access.",
+  "boundaryTitle": "The trust boundary is explicit",
+  "boundary": "Trust the VPS administrator: two SSH hops are not end-to-end encryption between the Macs. Keep your agent’s original login enabled. Other local programs can access the local port opened by the app.",
+  "panoramaTitle": "Expand the illustrated feature overview",
+  "panoramaAlt": "Chinese conceptual overview of Hermland features, including manual key approval, connection checks, and device revocation. Not a software screenshot.",
+  "artCaption": "A conceptual feature illustration, not a software screenshot. Follow the app and the steps above for actual setup.",
+  "downloadEyebrow": "READY WHEN YOU ARE",
+  "downloadTitle": "Take access with you.",
+  "releasePlatform": "Hermland 0.2.0 Beta · macOS 14+ · Apple Silicon / Intel",
+  "downloadZip": "Download Mac ZIP ↗",
+  "installTitle": "After downloading",
+  "install1": "Quit the old Hermland before upgrading.",
+  "install2": "Unzip the file and move Hermland to Applications.",
+  "install3": "Open the app and follow the first-connection steps above.",
+  "toolkit": "The setup toolkit is included. Download only this app; no separate toolkit is needed.",
+  "releaseWarning": "Developer ID signing, Apple notarization, and Gatekeeper checks passed. Still a beta: independent first-time-user and Intel hardware acceptance are pending. iOS is not available to download yet.",
+  "releaseNotes": "Release notes and checksums ↗",
+  "installHelp": "Trouble installing? ↗",
+  "faqTitle": "A few things you may wonder",
+  "vpnTitle": "Why not use Tailscale / a VPN?",
+  "vpnBody": "Hermland focuses on one agent web interface, reusing your VPS and built-in Mac SSH without joining another VPN network. You maintain the server, and first setup is not necessarily easier than Tailscale. This is not a claim of stronger security: Tailscale also offers device approval and access rules, and its DERP relays cannot decrypt end-to-end encrypted traffic. Our VPS administrator must be trusted. If you already use Tailscale or need several services, keep it. This app has no Tailscale mode and does not change your VPN.",
+  "comparison": "Compare six remote-access options ↗",
+  "faq1Title": "What if my home Mac is asleep or off?",
+  "faq1Body": "Bring it online, log in, and keep it awake first. Hermland cannot wake a powered-off Mac. This setup path requires the agent to run on a Mac; a Linux agent host is not supported in this version.",
+  "faq2Title": "Checks pass, but the agent does not answer?",
+  "faq2Body": "The four checks verify configuration, device keys, SSH, and backend health, not the model. Complete the original web login and send a test message. Your original agent still manages model accounts, quotas, and conversations.",
+  "faq3Title": "Can I revoke just one lost computer?",
+  "faq3Body": "Yes. An administrator revokes its public key over trusted SSH. Active connections close and new ones are rejected, without deleting chats or affecting other devices. Management is currently command-line only; there is no management UI.",
+  "revokeGuide": "Authorization and revocation guide (Chinese) ↗",
+  "faq4Title": "Do I need Screen Recording permission or autossh?",
+  "faq4Body": "Hermland needs neither Screen Recording nor Accessibility permission. Permissions for your agent’s desktop tools are separate. New relays use built-in macOS launchd and SSH, without an autossh install. Existing services stay unchanged.",
+  "faq5Title": "What about macOS security or Keychain prompts?",
+  "faq5Body": "A normal first-launch confirmation is expected. For Keychain access, verify Hermland and approve it yourself; do not delete the device key. If macOS reports an unverified developer, check the download source, version, and checksum, then report it. Do not disable Gatekeeper or run protection-removal scripts.",
+  "apple": "Apple’s safe-launch guidance ↗",
+  "faq6Title": "Do you receive my public keys or chats?",
+  "faq6Body": "This is a static site with no accounts, forms, authorization requests, chat backend, or analytics scripts. GitHub hosts browsing and downloads. The app reaches your home agent through your VPS, not through our chat service.",
+  "footer": "Connect to the agent you already use. The app and detailed manual guides currently use Chinese. No claim of an independent security audit.",
+  "privacy": "Privacy",
+  "security": "Security and feedback ↗"
 };
+
 if (new URLSearchParams(location.search).get("lang") === "en") {
   document.documentElement.lang = "en";
-  document.title = "Hermland — Connect to your own agent";
-  document.querySelector('meta[name="description"]').content = "Use your own Hermes or OpenClaw from another Mac. Manual public-key authorization, two SSH tunnels, and original conversations.";
-  document.querySelectorAll("[data-i18n]").forEach(node => { if (english[node.dataset.i18n]) node.textContent = english[node.dataset.i18n]; });
+  document.title = "Hermland — Take your agent access with you";
+  document.querySelector('meta[name="description"]').content = "Reach your existing Hermes or OpenClaw at home from another Mac. See the native app, server requirements, and first-connection steps. Keep your models and chats in place.";
+  document.querySelectorAll("[data-i18n]").forEach(node => {
+    node.textContent = english[node.dataset.i18n];
+  });
+  document.querySelectorAll("[data-i18n-alt]").forEach(node => {
+    node.alt = english[node.dataset.i18nAlt];
+  });
+  document.querySelectorAll("[data-en-href]").forEach(node => {
+    node.href = node.dataset.enHref;
+  });
   const language = document.getElementById("language");
-  language.href = "./"; language.lang = "zh-CN"; language.textContent = "中文"; language.setAttribute("aria-label", "阅读中文版");
-  document.getElementById("apple-guide").href = "https://support.apple.com/en-us/102445";
-  document.getElementById("readme").href = "https://github.com/ALVIN-YANG/Hermland/blob/main/README.en.md";
-  document.getElementById("comparison").href = "https://github.com/ALVIN-YANG/Hermland/blob/main/docs/外网连接方案对比.en.md";
-  document.getElementById("panorama").alt = "Hermland overview: existing agent, two SSH tunnels, manual public keys, checks, and device revocation. Chinese labels.";
+  language.href = "./";
+  language.lang = "zh-CN";
+  language.textContent = "中文";
+  language.setAttribute("aria-label", "阅读中文版");
   document.querySelector("nav").setAttribute("aria-label", "Navigation");
-  document.querySelector(".network").setAttribute("aria-label", "Two SSH tunnels through your VPS");
+  document.querySelector(".network").setAttribute("aria-label", "Both Macs initiate SSH connections to your VPS");
 }

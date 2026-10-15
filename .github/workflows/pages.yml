@@ -7,7 +7,7 @@ on:
     paths:
       - website/**
       - scripts/build-website.sh
-      - assets/readme/panorama.png
+      - assets/readme/**
       - artwork/icons/hermland-icon-messenger-1024.png
       - .github/workflows/pages.yml
 permissions:
