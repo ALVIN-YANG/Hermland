@@ -10,7 +10,7 @@ if [[ ${1:-} == --macos ]]; then
     command -v xcodegen >/dev/null || { printf 'FAIL：请先安装 XcodeGen\n' >&2; exit 1; }
     task_check_dir=$(mktemp -d "${TMPDIR:-/tmp}/hermland-check.XXXXXXXX")
     trap 'rm -rf "$task_check_dir"' EXIT
-    swiftc macos/Sources/AgentBackend.swift macos/Sources/SSHConfiguration.swift tests/SSHConfigurationCheck.swift -o "$task_check_dir/ssh-check"
+    swiftc shared/AgentBackend.swift shared/SSHConfiguration.swift tests/SSHConfigurationCheck.swift -o "$task_check_dir/ssh-check"
     "$task_check_dir/ssh-check"
     (cd macos && xcodegen generate)
     xcodebuild -quiet -project macos/Hermland.xcodeproj -scheme Hermland -configuration Debug \

@@ -1,0 +1,6 @@
+# Extend an already built disposable image when the Docker registry is unavailable.
+FROM hermland-ios-upstreams:local
+RUN apt-get update && apt-get install -y --no-install-recommends python3-venv \
+    && python3 -m venv /opt/hermes-venv \
+    && /opt/hermes-venv/bin/pip install 'pyyaml>=6.0' 'cryptography>=42.0' \
+    && rm -rf /var/lib/apt/lists/*

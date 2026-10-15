@@ -1,22 +1,22 @@
 import Foundation
 import CryptoKit
 
-struct SSHConfiguration: Codable, Equatable {
-    var host = ""
-    var port = 22
-    var user = ""
-    var remotePort = 19119
-    var localPort = 19121
+public struct SSHConfiguration: Codable, Equatable, Sendable {
+    public var host = ""
+    public var port = 22
+    public var user = ""
+    public var remotePort = 19119
+    public var localPort = 19121
     /// Obtained from an administrator over an already trusted channel.
-    var serverPublicKey = ""
-    var backend: AgentBackend = .hermes
-    var controlUIPath = "/"
+    public var serverPublicKey = ""
+    public var backend: AgentBackend = .hermes
+    public var controlUIPath = "/"
 
     enum CodingKeys: String, CodingKey {
         case host, port, user, remotePort, localPort, serverPublicKey, backend, controlUIPath
     }
 
-    init(host: String = "", port: Int = 22, user: String = "", remotePort: Int = 19119,
+    public init(host: String = "", port: Int = 22, user: String = "", remotePort: Int = 19119,
          localPort: Int = 19121, serverPublicKey: String = "", backend: AgentBackend = .hermes,
          controlUIPath: String = "/") {
         self.host = host
@@ -29,7 +29,7 @@ struct SSHConfiguration: Codable, Equatable {
         self.controlUIPath = controlUIPath
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         host = try values.decode(String.self, forKey: .host)
         port = try values.decode(Int.self, forKey: .port)
@@ -42,15 +42,15 @@ struct SSHConfiguration: Codable, Equatable {
         controlUIPath = try values.decodeIfPresent(String.self, forKey: .controlUIPath) ?? "/"
     }
 
-    var displayAddress: String { "\(user)@\(host):\(port)" }
-    var localURL: URL {
+    public var displayAddress: String { "\(user)@\(host):\(port)" }
+    public var localURL: URL {
         var value = URLComponents(string: "http://127.0.0.1:\(localPort)")!
         value.path = controlUIPath
         return value.url!
     }
 
     /// A loopback URL can point to another server later. Never share its browser credentials.
-    var websiteDataStoreID: UUID {
+    public var websiteDataStoreID: UUID {
         let route = [host.lowercased(), String(port), user, String(remotePort), String(localPort),
                      serverPublicKey, backend.rawValue, controlUIPath]
         let data = try! JSONEncoder().encode(route)
@@ -59,7 +59,7 @@ struct SSHConfiguration: Codable, Equatable {
                            bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]))
     }
 
-    func validated() throws -> SSHConfiguration {
+    public func validated() throws -> SSHConfiguration {
         var value = self
         value.host = host.trimmingCharacters(in: .whitespacesAndNewlines)
         value.user = user.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -79,7 +79,7 @@ struct SSHConfiguration: Codable, Equatable {
         return value
     }
 
-    static func normalizedPublicKey(_ text: String) throws -> String {
+    public static func normalizedPublicKey(_ text: String) throws -> String {
         let parts = text.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: " ", omittingEmptySubsequences: true)
         guard !text.contains("\n"), !text.contains("\r"), parts.count >= 2,
               parts[0] == "ssh-ed25519", let data = Data(base64Encoded: String(parts[1])),
@@ -92,18 +92,18 @@ struct SSHConfiguration: Codable, Equatable {
         return "ssh-ed25519 \(parts[1])"
     }
 
-    static func fingerprint(_ publicKey: String) -> String? {
+    public static func fingerprint(_ publicKey: String) -> String? {
         guard let normalized = try? normalizedPublicKey(publicKey),
               let data = Data(base64Encoded: String(normalized.split(separator: " ")[1])) else { return nil }
         return "SHA256:" + Data(SHA256.hash(data: data)).base64EncodedString().replacingOccurrences(of: "=", with: "")
     }
 
-    var knownHostsEntry: String {
+    public var knownHostsEntry: String {
         let name = port == 22 ? host : "[\(host)]:\(port)"
         return "\(name) \(serverPublicKey)\n"
     }
 
-    func sshArguments(identity: URL, knownHosts: URL) -> [String] {
+    public func sshArguments(identity: URL, knownHosts: URL) -> [String] {
         ["-F", "/dev/null", "-N", "-T", "-v", "-p", String(port),
          "-i", identity.path,
          "-o", "BatchMode=yes", "-o", "IdentitiesOnly=yes", "-o", "IdentityAgent=none",
@@ -116,12 +116,12 @@ struct SSHConfiguration: Codable, Equatable {
     }
 }
 
-enum SSHConnectionError: LocalizedError {
+public enum SSHConnectionError: LocalizedError {
     case invalidConfiguration(String)
     case keychain(Int32)
     case process(String)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .invalidConfiguration(let message), .process(let message): return message
         case .keychain(let code): return "无法读取或保存设备密钥，钥匙串错误：\(code)"

@@ -5,6 +5,7 @@ task_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 task_site="$task_root/website/.build"
 mkdir -p "$task_site/assets"
 cp "$task_root/website/index.html" "$task_root/website/style.css" "$task_root/website/site.js" "$task_site/"
+cp "$task_root/website/privacy.html" "$task_site/"
 cp "$task_root/assets/readme/panorama.png" "$task_site/assets/"
 cp "$task_root/artwork/icons/hermland-icon-messenger-1024.png" "$task_site/assets/icon.png"
 printf 'PASS：静态下载页 %s\n' "$task_site"

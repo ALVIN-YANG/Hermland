@@ -1,15 +1,15 @@
 import Foundation
 
 /// Both backends use their own web UI. SSH transport and device authorization are shared.
-enum AgentBackend: String, Codable, CaseIterable, Identifiable {
+public enum AgentBackend: String, Codable, CaseIterable, Identifiable, Sendable {
     case hermes
     case openclaw
 
-    var id: String { rawValue }
-    var title: String { self == .hermes ? "Hermes" : "OpenClaw" }
-    var healthPath: String { self == .hermes ? "/health" : "/healthz" }
+    public var id: String { rawValue }
+    public var title: String { self == .hermes ? "Hermes" : "OpenClaw" }
+    public var healthPath: String { self == .hermes ? "/health" : "/healthz" }
 
-    static func normalizedUIPath(_ text: String) throws -> String {
+    public static func normalizedUIPath(_ text: String) throws -> String {
         let path = text.trimmingCharacters(in: .whitespacesAndNewlines)
         if path == "/" { return path }
         guard path.hasPrefix("/"), !path.hasPrefix("//"),

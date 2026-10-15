@@ -8,8 +8,8 @@ settings:
   base:
     PRODUCT_NAME: Hermland
     PRODUCT_BUNDLE_IDENTIFIER: land.hermland.client
-    MARKETING_VERSION: 0.1.0
-    CURRENT_PROJECT_VERSION: 4
+    MARKETING_VERSION: 0.2.0
+    CURRENT_PROJECT_VERSION: 5
     MACOSX_DEPLOYMENT_TARGET: 14.0
     SWIFT_VERSION: 5.0
     GENERATE_INFOPLIST_FILE: YES
@@ -33,6 +33,9 @@ targets:
       - path: Sources
         excludes:
           - "**/.DS_Store"
+      - path: ../shared/AgentBackend.swift
+      - path: ../shared/SSHConfiguration.swift
+      - path: ../ui
       - path: Resources/AppIcon.icns
         buildPhase: resources
       - path: ../deploy/hermland.py

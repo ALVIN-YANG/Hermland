@@ -94,6 +94,9 @@ final class AppState: ObservableObject {
     func readSSHConfiguration(from url: URL) throws -> SSHConfiguration {
         let scoped = url.startAccessingSecurityScopedResource()
         defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        guard (try url.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0) <= 65_536 else {
+            throw SSHConnectionError.invalidConfiguration("配置文件过大，请选择管理员返回的 JSON。")
+        }
         return try JSONDecoder().decode(SSHConfiguration.self, from: Data(contentsOf: url)).validated()
     }
 

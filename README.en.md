@@ -26,11 +26,11 @@ For users who already run Hermes with WebUI, or OpenClaw Gateway with Control UI
 
 ## Get started
 
-1. **Send the material.** Select your existing backend and click “复制配置材料” (copy setup material). Send it manually to your usual agent or trusted administrator. It includes this Mac's public key and fingerprint, never its private key.
-2. **Confirm authorization.** Check the reported computer and fingerprint, then explicitly approve it. Copying is not approval. You can be the administrator; use the manual guide if the agent lacks permission to execute commands.
-3. **Import and use.** Click “导入并检查…” (import and check). Review the returned JSON and server fingerprint, then confirm its trusted source to start connection checks. Complete the original web login and send a message yourself to test the model.
+1. **Prepare a server.** Select your existing backend and click “开始连接” (start connecting). Enter your own VPS address and SSH port. If you do not have one, follow the preparation guide. You or your administrator must first verify its identity and be able to manage it.
+2. **Send a connection card.** Click “复制连接卡” (copy connection card), then paste it into your usual agent conversation. Check the device name and public-key fingerprint before explicitly approving authorization. Copying is not approval. Use the manual path if your agent cannot execute commands.
+3. **Import and use.** Click “我收到连接文件了” (I have the connection file). Review the returned JSON and server fingerprint, then confirm its trusted source to start checks. Complete the original web login and send a message yourself to test the model.
 
-First setup prepares or reuses the relay. Choose “新增一台电脑” (add a computer) for later devices: only add a key, without reinstalling services or creating another home tunnel. For daily use, open the app; it reconnects using the saved configuration.
+These labels describe 0.2.0. For later devices, choose the welcome page's add-device link: only add a key, without reinstalling services or creating another home tunnel. You can import an existing JSON directly. For daily use, open the app; it reconnects using the saved configuration.
 
 See the **[quick start guide (Chinese)](docs/快速开始.md)** for setup instructions, administrator commands, and pass criteria. Reuse working services and tunnels. Do not reinstall the agent, change models, or copy conversations. The app UI and detailed guides currently use Chinese.
 
@@ -83,7 +83,7 @@ open .build/Build/Products/Debug/Hermland.app
 
 [GitHub CI](https://github.com/ALVIN-YANG/Hermland/actions/workflows/ci.yml) covers secret scanning, Python checks, real SSH authorization and revocation on Ubuntu/Debian, macOS tests, and universal Intel/Apple Silicon development packages. CI artifacts are not notarized and are not official releases.
 
-The OpenClaw integration acceptance script targets version 2026.9.9. Other upstream versions still need real verification. There are no iOS/Windows clients, official one-line download installer, or server purchasing service. See the [release and acceptance checklist (Chinese)](docs/发布与验收.md) for signing, notarization, and independent cross-network installation tests.
+The OpenClaw integration acceptance script targets version 2026.9.9. Other upstream versions still need real verification. An iOS 17+ client is now being implemented and tested in `ios/`; **it has not been submitted for review or made available for download**. See the [iOS development and acceptance notes (Chinese)](ios/README.md). There is no Windows client, official one-line download installer, or server purchasing service. See the [release and acceptance checklist (Chinese)](docs/发布与验收.md) for signing, notarization, and independent cross-network installation tests.
 
 ## Contribute
 

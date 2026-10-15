@@ -34,5 +34,6 @@ artwork/onboarding/流程介绍.png
 artwork/onboarding/流程介绍.html
 artwork/onboarding/
 macos/*.xcodeproj/
+ios/*.xcodeproj/
 gate/*
 !gate/README.md

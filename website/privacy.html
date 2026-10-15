@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hermland 隐私说明 · Privacy</title>
+<style>body{font:17px/1.75 system-ui,-apple-system,sans-serif;color:#1a2036;background:#f7f6f2;max-width:760px;margin:0 auto;padding:40px 24px}a{color:#2e6b61}h1{font-size:32px}h2{font-size:23px;margin-top:32px}</style></head>
+<body>
+<a href="./">Hermland</a>
+<h1>隐私说明</h1>
+<p>更新日期：2026 年 10 月 13 日。Hermland 是连接你自有 Hermes WebUI 或 OpenClaw Control UI 的客户端。维护者不运营聊天或连接代理服务器。</p>
+<h2>本机保存什么</h2>
+<p>连接地址、端口、后端类型、设备账户和已核对的服务器公钥保存在设备本地。iOS 的独立设备私钥保存在本机钥匙串，设为仅本设备、解锁时可读，不通过 Hermland 同步到其他设备。</p>
+<p>原网页的登录状态、缓存与网页存储由 WebKit 保存，并按连接路由隔离。你复制或通过系统分享面板发出的连接卡包含公钥、指纹、你填写的服务器地址与端口，以及配置说明；发送目标由你选择，材料不包含私钥、管理员密码或模型凭据。</p>
+<h2>内容发给谁</h2>
+<p>连接与聊天流量发往你指定的 VPS 和 Agent。双 SSH 分段加密，VPS 管理员属于可信边界，能够接触中转内容。原 Agent、它加载的外部资源及模型服务仍可能按各自规则处理数据；请核对你使用的服务和部署。</p>
+<p>Hermland 本身不嵌入广告、分析或追踪 SDK，不将你的聊天、公钥、连接地址或凭据发送给维护者。你主动打开项目、支持或其他外部链接时，对应网站会接收正常的网络访问。Apple 可能根据你的系统诊断和 TestFlight 设置处理崩溃与反馈，详情以 Apple 的说明为准。</p>
+<h2>权限与删除</h2>
+<p>局域网权限仅用于连接你配置的局域网 SSH 服务器。Hermland 不要求屏幕录制、辅助功能、通讯录、相机或麦克风权限。</p>
+<p>App 内“移除此连接配置”清除本机连接记录，并停止当前连接；它不删除原 Agent 的会话，也不撤销服务器授权。永久停用或丢失设备时，应由管理员撤销该设备公钥。钥匙串身份可能在卸载后保留，重装不能替代服务器撤销。原网页会话、模型服务数据和服务器日志由你或对应服务管理。</p>
+<h2>支持</h2>
+<p>普通问题可通过 <a href="https://github.com/ALVIN-YANG/Hermland/issues">项目支持</a>联系维护者。请勿在公开 Issue 中发送地址、凭据或聊天。安全问题使用 <a href="https://github.com/ALVIN-YANG/Hermland/security/advisories/new">私密漏洞报告</a>。</p>
+<hr>
+<h1 lang="en">Privacy</h1>
+<div lang="en">
+<p>Updated October 13, 2026. Hermland connects to your own Hermes WebUI or OpenClaw Control UI. The maintainer does not operate a chat or connection relay service.</p>
+<p>Connection settings and the reviewed server public key stay on your device. The iOS device private key is stored in Keychain with a device-only, when-unlocked policy. Hermland does not sync it. WebKit stores the original page's login state and website data, isolated by connection route. A connection card you copy or share includes the public key, fingerprint, server address and port you entered, and instructions; never the private key, administrator password or model credentials. You choose where to send it.</p>
+<p>Traffic goes to the VPS and Agent you configure. The two SSH channels encrypt each network segment; the VPS administrator is trusted and can access relay content. Your Agent, external resources it loads, and model providers have their own data practices.</p>
+<p>Hermland includes no advertising, analytics or tracking SDK and does not send your conversations, keys, connection addresses or credentials to the maintainer. Opening external support or project links makes a normal request to that website. Apple may handle diagnostics, crashes and TestFlight feedback under your system settings.</p>
+<p>Local network permission is used only to connect to your configured local SSH server. Hermland does not request screen recording, Accessibility, contacts, camera or microphone permissions. Removing a connection deletes local configuration and ends the connection; it does not delete Agent conversations or revoke server authorization. An administrator must revoke the device's public key when the device is lost or retired. The Keychain identity can survive uninstalling the app. Server and model-provider data remain under your or the provider's control.</p>
+<p>Contact the maintainer through <a href="https://github.com/ALVIN-YANG/Hermland/issues">project support</a>. Never post secrets or conversations in a public issue. Use <a href="https://github.com/ALVIN-YANG/Hermland/security/advisories/new">private security reporting</a> for vulnerabilities.</p>
+</div></body></html>
